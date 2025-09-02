@@ -338,35 +338,36 @@ namespace yy {
         S_Param2 = 49,                           // Param2
         S_Param3 = 50,                           // Param3
         S_Param4 = 51,                           // Param4
-        S_Param = 52,                            // Param
-        S_Type = 53,                             // Type
-        S_Block = 54,                            // Block
-        S_StmtListOpt = 55,                      // StmtListOpt
-        S_StmtList = 56,                         // StmtList
-        S_Stmt = 57,                             // Stmt
-        S_LetStmt = 58,                          // LetStmt
-        S_TypeOpt = 59,                          // TypeOpt
-        S_InitOpt = 60,                          // InitOpt
-        S_ReturnStmt = 61,                       // ReturnStmt
-        S_ExprOpt = 62,                          // ExprOpt
-        S_IfStmt = 63,                           // IfStmt
-        S_WhileStmt = 64,                        // WhileStmt
-        S_ForStmt = 65,                          // ForStmt
-        S_ForInitOpt = 66,                       // ForInitOpt
-        S_ForCondOpt = 67,                       // ForCondOpt
-        S_ForPostOpt = 68,                       // ForPostOpt
-        S_ExprStmt = 69,                         // ExprStmt
-        S_Expr = 70,                             // Expr
-        S_OrExpr = 71,                           // OrExpr
-        S_AndExpr = 72,                          // AndExpr
-        S_AddExpr = 73,                          // AddExpr
-        S_MulExpr = 74,                          // MulExpr
-        S_Unary = 75,                            // Unary
-        S_Postfix = 76,                          // Postfix
-        S_Primary = 77,                          // Primary
-        S_ArgListOpt = 78,                       // ArgListOpt
-        S_ArgList = 79,                          // ArgList
-        S_Literal = 80                           // Literal
+        S_Param5 = 52,                           // Param5
+        S_Param = 53,                            // Param
+        S_Type = 54,                             // Type
+        S_Block = 55,                            // Block
+        S_StmtListOpt = 56,                      // StmtListOpt
+        S_StmtList = 57,                         // StmtList
+        S_Stmt = 58,                             // Stmt
+        S_LetStmt = 59,                          // LetStmt
+        S_TypeOpt = 60,                          // TypeOpt
+        S_InitOpt = 61,                          // InitOpt
+        S_ReturnStmt = 62,                       // ReturnStmt
+        S_ExprOpt = 63,                          // ExprOpt
+        S_IfStmt = 64,                           // IfStmt
+        S_WhileStmt = 65,                        // WhileStmt
+        S_ForStmt = 66,                          // ForStmt
+        S_ForInitOpt = 67,                       // ForInitOpt
+        S_ForCondOpt = 68,                       // ForCondOpt
+        S_ForPostOpt = 69,                       // ForPostOpt
+        S_ExprStmt = 70,                         // ExprStmt
+        S_Expr = 71,                             // Expr
+        S_OrExpr = 72,                           // OrExpr
+        S_AndExpr = 73,                          // AndExpr
+        S_AddExpr = 74,                          // AddExpr
+        S_MulExpr = 75,                          // MulExpr
+        S_Unary = 76,                            // Unary
+        S_Postfix = 77,                          // Postfix
+        S_Primary = 78,                          // Primary
+        S_ArgListOpt = 79,                       // ArgListOpt
+        S_ArgList = 80,                          // ArgList
+        S_Literal = 81                           // Literal
       };
     };
 
@@ -850,8 +851,8 @@ namespace yy {
     /// Constants.
     enum
     {
-      yylast_ = 144,     ///< Last index in yytable_.
-      yynnts_ = 40,  ///< Number of nonterminal symbols.
+      yylast_ = 145,     ///< Last index in yytable_.
+      yynnts_ = 41,  ///< Number of nonterminal symbols.
       yyfinal_ = 56 ///< Termination state number.
     };
 
@@ -862,7 +863,7 @@ namespace yy {
 
 #line 2 "parser.y"
 } // yy
-#line 866 "parser.hpp"
+#line 867 "parser.hpp"
 
 
 

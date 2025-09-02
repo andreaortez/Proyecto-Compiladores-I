@@ -67,7 +67,6 @@ Item
   ;
 
 /* ===== Definición de funciones ===== */
-/* Límite de parámetros: 4 (ajustable expandiendo ParamListN) */
 
 FnDecl
   : FN IDENT LPAREN ParamListOpt RPAREN RetTypeOpt Block
@@ -84,6 +83,7 @@ ParamListOpt
   | Param2
   | Param3
   | Param4
+  | Param5
   ;
 
 Param1
@@ -100,6 +100,10 @@ Param3
 
 Param4
   : Param COMMA Param COMMA Param COMMA Param
+  ;
+
+Param5
+  : Param COMMA Param COMMA Param COMMA Param COMMA Param
   ;
 
 Param

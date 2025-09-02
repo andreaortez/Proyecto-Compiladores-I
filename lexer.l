@@ -11,7 +11,11 @@
 
 using yy::parser;
 using token = yy::parser::token;
+
+static int c_depth = 0;
 %}
+
+%x C_COMMENT
 
 WS      [ \t\r\f\v]+
 ID      [A-Za-z_][A-Za-z0-9_]*
@@ -25,6 +29,18 @@ STRING  \"([^\\\"\n]|\\.)*\"
 {WS}            ;
 "//".*          ;
 \n              ;
+
+"/*"                 { c_depth = 1; BEGIN(C_COMMENT); }
+<C_COMMENT>"/*"      { ++c_depth; }
+<C_COMMENT>"*/"      { if (--c_depth == 0) BEGIN(INITIAL); }
+<C_COMMENT>\n        { ++yylineno; }
+<C_COMMENT>.         { /* comer cualquier otro carácter */ }
+<C_COMMENT><<EOF>>   {
+                        std::fprintf(stderr,
+                          "[lex] comentario de bloque sin cerrar (linea %d)\n",
+                          yylineno);
+                        return 0;
+                      }
 
 "let"           { return token::LET; }
 "fn"            { return token::FN; }
@@ -59,7 +75,6 @@ STRING  \"([^\\\"\n]|\\.)*\"
 "]"             { return token::RBRACK; }
 ","             { return token::COMMA; }
 ";"             { return token::SEMICOLON; }
-
 ":"             { return token::COLON; }
 "->"            { return token::ARROW; }
 "="             { return token::ASSIGN; }
@@ -71,6 +86,8 @@ STRING  \"([^\\\"\n]|\\.)*\"
 
 {ID}            { return token::IDENT; }
 
-.               { std::fprintf(stderr, "Error léxico (línea %d): '%s'\n", yylineno, yytext); }
+/* imprimir errores */
+.               { std::fprintf(stderr,
+                    "Error lexico (linea %d): '%s'\n", yylineno, yytext); }
 
-%%
+%% 
