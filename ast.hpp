@@ -25,8 +25,8 @@ namespace ast
 
     enum class UnOp
     {
-        Pos,
-        Neg,
+        Positive,
+        Negative,
         Not
     };
 

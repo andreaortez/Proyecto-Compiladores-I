@@ -1242,7 +1242,7 @@ namespace yy {
       auto fn = std::make_unique<ast::Fn>();
       fn->name = std::move(yystack_[5].value.as < std::string > ());
       if (yystack_[3].value.as < std::vector<ast::Param>* > ()) { fn->params = std::move(*yystack_[3].value.as < std::vector<ast::Param>* > ()); delete yystack_[3].value.as < std::vector<ast::Param>* > (); }
-      fn->retTy = std::move(yystack_[1].value.as < std::string > ());                
+      fn->retType = std::move(yystack_[1].value.as < std::string > ());                
       fn->body.reset( (ast::Block*)yystack_[0].value.as < ast::Stmt* > () );
       yylhs.value.as < ast::Fn* > () = fn.release();
     }
@@ -1331,7 +1331,7 @@ namespace yy {
 #line 145 "parser.y"
     {
       yylhs.value.as < ast::Param > ().name = std::move(yystack_[2].value.as < std::string > ());
-      yylhs.value.as < ast::Param > ().ty   = std::move(yystack_[0].value.as < std::string > ());
+      yylhs.value.as < ast::Param > ().type   = std::move(yystack_[0].value.as < std::string > ());
     }
 #line 1337 "parser.cpp"
     break;
@@ -1447,7 +1447,7 @@ namespace yy {
     {
       auto s = std::make_unique<ast::Let>();
       s->name = std::move(yystack_[3].value.as < std::string > ());
-      s->ty   = std::move(yystack_[2].value.as < std::string > ());
+      s->type   = std::move(yystack_[2].value.as < std::string > ());
       s->init.reset( (ast::Expr*)yystack_[1].value.as < ast::Expr* > () );
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
@@ -1685,13 +1685,13 @@ namespace yy {
 
   case 73: // Unary: PLUS Unary
 #line 325 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Pos, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
 #line 1690 "parser.cpp"
     break;
 
   case 74: // Unary: MINUS Unary
 #line 326 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Neg, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
 #line 1696 "parser.cpp"
     break;
 

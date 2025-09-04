@@ -97,7 +97,7 @@ FnDecl
       auto fn = std::make_unique<ast::Fn>();
       fn->name = std::move($2);
       if ($4) { fn->params = std::move(*$4); delete $4; }
-      fn->retTy = std::move($6);                
+      fn->retType = std::move($6);                
       fn->body.reset( (ast::Block*)$7 );
       $$ = fn.release();
     }
@@ -144,7 +144,7 @@ Param
   : IDENT COLON Type
     {
       $$.name = std::move($1);
-      $$.ty   = std::move($3);
+      $$.type   = std::move($3);
     }
   ;
 
@@ -192,7 +192,7 @@ LetStmt
     {
       auto s = std::make_unique<ast::Let>();
       s->name = std::move($2);
-      s->ty   = std::move($3);
+      s->type   = std::move($3);
       s->init.reset( (ast::Expr*)$4 );
       $$ = s.release();
     }
@@ -322,8 +322,8 @@ MulExpr
 
 Unary
   : NOT  Unary            { $$ = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>($2)); }
-  | PLUS Unary            { $$ = new ast::Unary(ast::UnOp::Pos, std::unique_ptr<ast::Expr>($2)); }
-  | MINUS Unary           { $$ = new ast::Unary(ast::UnOp::Neg, std::unique_ptr<ast::Expr>($2)); }
+  | PLUS Unary            { $$ = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>($2)); }
+  | MINUS Unary           { $$ = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>($2)); }
   | Postfix               { $$ = $1; }
   ;
 
