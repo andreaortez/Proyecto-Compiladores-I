@@ -25,6 +25,18 @@ namespace ast
             return "||";
         case BinOp::Assign:
             return "=";
+        case BinOp::Eq:
+            return "==";
+        case BinOp::Ne:
+            return "!=";
+        case BinOp::Lt:
+            return "<";
+        case BinOp::Le:
+            return "<=";
+        case BinOp::Gt:
+            return ">";
+        case BinOp::Ge:
+            return ">=";
         }
         return "?";
     }

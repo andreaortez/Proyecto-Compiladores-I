@@ -392,6 +392,8 @@ namespace yy {
       // Expr
       // OrExpr
       // AndExpr
+      // EqExpr
+      // RelExpr
       // AddExpr
       // MulExpr
       // Unary
@@ -524,18 +526,25 @@ namespace yy {
     MINUS = 26,                    // MINUS
     MULTIPLY = 27,                 // MULTIPLY
     DIVIDE = 28,                   // DIVIDE
-    LBRACE = 29,                   // LBRACE
-    RBRACE = 30,                   // RBRACE
-    LPAREN = 31,                   // LPAREN
-    RPAREN = 32,                   // RPAREN
-    LBRACK = 33,                   // LBRACK
-    RBRACK = 34,                   // RBRACK
-    COMMA = 35,                    // COMMA
-    SEMICOLON = 36,                // SEMICOLON
-    COLON = 37,                    // COLON
-    ARROW = 38,                    // ARROW
-    ASSIGN = 39,                   // ASSIGN
-    IF_NO_ELSE = 40                // IF_NO_ELSE
+    LT = 29,                       // LT
+    GT = 30,                       // GT
+    LE = 31,                       // LE
+    GE = 32,                       // GE
+    EQ = 33,                       // EQ
+    NE = 34,                       // NE
+    QMARK = 35,                    // QMARK
+    LBRACE = 36,                   // LBRACE
+    RBRACE = 37,                   // RBRACE
+    LPAREN = 38,                   // LPAREN
+    RPAREN = 39,                   // RPAREN
+    LBRACK = 40,                   // LBRACK
+    RBRACK = 41,                   // RBRACK
+    COMMA = 42,                    // COMMA
+    SEMICOLON = 43,                // SEMICOLON
+    COLON = 44,                    // COLON
+    ARROW = 45,                    // ARROW
+    ASSIGN = 46,                   // ASSIGN
+    IF_NO_ELSE = 47                // IF_NO_ELSE
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -552,7 +561,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 41, ///< Number of tokens.
+        YYNTOKENS = 48, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -583,58 +592,67 @@ namespace yy {
         S_MINUS = 26,                            // MINUS
         S_MULTIPLY = 27,                         // MULTIPLY
         S_DIVIDE = 28,                           // DIVIDE
-        S_LBRACE = 29,                           // LBRACE
-        S_RBRACE = 30,                           // RBRACE
-        S_LPAREN = 31,                           // LPAREN
-        S_RPAREN = 32,                           // RPAREN
-        S_LBRACK = 33,                           // LBRACK
-        S_RBRACK = 34,                           // RBRACK
-        S_COMMA = 35,                            // COMMA
-        S_SEMICOLON = 36,                        // SEMICOLON
-        S_COLON = 37,                            // COLON
-        S_ARROW = 38,                            // ARROW
-        S_ASSIGN = 39,                           // ASSIGN
-        S_IF_NO_ELSE = 40,                       // IF_NO_ELSE
-        S_YYACCEPT = 41,                         // $accept
-        S_Program = 42,                          // Program
-        S_ItemList = 43,                         // ItemList
-        S_Item = 44,                             // Item
-        S_FnDecl = 45,                           // FnDecl
-        S_RetTypeOpt = 46,                       // RetTypeOpt
-        S_ParamListOpt = 47,                     // ParamListOpt
-        S_Param1 = 48,                           // Param1
-        S_Param2 = 49,                           // Param2
-        S_Param3 = 50,                           // Param3
-        S_Param4 = 51,                           // Param4
-        S_Param5 = 52,                           // Param5
-        S_Param = 53,                            // Param
-        S_Type = 54,                             // Type
-        S_Block = 55,                            // Block
-        S_StmtListOpt = 56,                      // StmtListOpt
-        S_StmtList = 57,                         // StmtList
-        S_Stmt = 58,                             // Stmt
-        S_LetStmt = 59,                          // LetStmt
-        S_TypeOpt = 60,                          // TypeOpt
-        S_InitOpt = 61,                          // InitOpt
-        S_ReturnStmt = 62,                       // ReturnStmt
-        S_ExprOpt = 63,                          // ExprOpt
-        S_IfStmt = 64,                           // IfStmt
-        S_WhileStmt = 65,                        // WhileStmt
-        S_ForStmt = 66,                          // ForStmt
-        S_ForInitOpt = 67,                       // ForInitOpt
-        S_ForCondOpt = 68,                       // ForCondOpt
-        S_ForPostOpt = 69,                       // ForPostOpt
-        S_ExprStmt = 70,                         // ExprStmt
-        S_Expr = 71,                             // Expr
-        S_OrExpr = 72,                           // OrExpr
-        S_AndExpr = 73,                          // AndExpr
-        S_AddExpr = 74,                          // AddExpr
-        S_MulExpr = 75,                          // MulExpr
-        S_Unary = 76,                            // Unary
-        S_Postfix = 77,                          // Postfix
-        S_Primary = 78,                          // Primary
-        S_ArgListOpt = 79,                       // ArgListOpt
-        S_ArgList = 80                           // ArgList
+        S_LT = 29,                               // LT
+        S_GT = 30,                               // GT
+        S_LE = 31,                               // LE
+        S_GE = 32,                               // GE
+        S_EQ = 33,                               // EQ
+        S_NE = 34,                               // NE
+        S_QMARK = 35,                            // QMARK
+        S_LBRACE = 36,                           // LBRACE
+        S_RBRACE = 37,                           // RBRACE
+        S_LPAREN = 38,                           // LPAREN
+        S_RPAREN = 39,                           // RPAREN
+        S_LBRACK = 40,                           // LBRACK
+        S_RBRACK = 41,                           // RBRACK
+        S_COMMA = 42,                            // COMMA
+        S_SEMICOLON = 43,                        // SEMICOLON
+        S_COLON = 44,                            // COLON
+        S_ARROW = 45,                            // ARROW
+        S_ASSIGN = 46,                           // ASSIGN
+        S_IF_NO_ELSE = 47,                       // IF_NO_ELSE
+        S_YYACCEPT = 48,                         // $accept
+        S_Program = 49,                          // Program
+        S_ItemList = 50,                         // ItemList
+        S_Item = 51,                             // Item
+        S_FnDecl = 52,                           // FnDecl
+        S_RetTypeOpt = 53,                       // RetTypeOpt
+        S_ParamListOpt = 54,                     // ParamListOpt
+        S_Param1 = 55,                           // Param1
+        S_Param2 = 56,                           // Param2
+        S_Param3 = 57,                           // Param3
+        S_Param4 = 58,                           // Param4
+        S_Param5 = 59,                           // Param5
+        S_Param = 60,                            // Param
+        S_Type = 61,                             // Type
+        S_Block = 62,                            // Block
+        S_StmtListOpt = 63,                      // StmtListOpt
+        S_StmtList = 64,                         // StmtList
+        S_Stmt = 65,                             // Stmt
+        S_LetStmt = 66,                          // LetStmt
+        S_TypeOpt = 67,                          // TypeOpt
+        S_InitOpt = 68,                          // InitOpt
+        S_ReturnStmt = 69,                       // ReturnStmt
+        S_ExprOpt = 70,                          // ExprOpt
+        S_IfStmt = 71,                           // IfStmt
+        S_WhileStmt = 72,                        // WhileStmt
+        S_ForStmt = 73,                          // ForStmt
+        S_ForInitOpt = 74,                       // ForInitOpt
+        S_ForCondOpt = 75,                       // ForCondOpt
+        S_ForPostOpt = 76,                       // ForPostOpt
+        S_ExprStmt = 77,                         // ExprStmt
+        S_Expr = 78,                             // Expr
+        S_OrExpr = 79,                           // OrExpr
+        S_AndExpr = 80,                          // AndExpr
+        S_EqExpr = 81,                           // EqExpr
+        S_RelExpr = 82,                          // RelExpr
+        S_AddExpr = 83,                          // AddExpr
+        S_MulExpr = 84,                          // MulExpr
+        S_Unary = 85,                            // Unary
+        S_Postfix = 86,                          // Postfix
+        S_Primary = 87,                          // Primary
+        S_ArgListOpt = 88,                       // ArgListOpt
+        S_ArgList = 89                           // ArgList
       };
     };
 
@@ -677,6 +695,8 @@ namespace yy {
       case symbol_kind::S_Expr: // Expr
       case symbol_kind::S_OrExpr: // OrExpr
       case symbol_kind::S_AndExpr: // AndExpr
+      case symbol_kind::S_EqExpr: // EqExpr
+      case symbol_kind::S_RelExpr: // RelExpr
       case symbol_kind::S_AddExpr: // AddExpr
       case symbol_kind::S_MulExpr: // MulExpr
       case symbol_kind::S_Unary: // Unary
@@ -976,6 +996,8 @@ switch (yykind)
       case symbol_kind::S_Expr: // Expr
       case symbol_kind::S_OrExpr: // OrExpr
       case symbol_kind::S_AndExpr: // AndExpr
+      case symbol_kind::S_EqExpr: // EqExpr
+      case symbol_kind::S_RelExpr: // RelExpr
       case symbol_kind::S_AddExpr: // AddExpr
       case symbol_kind::S_MulExpr: // MulExpr
       case symbol_kind::S_Unary: // Unary
@@ -1670,6 +1692,111 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_LT ()
+      {
+        return symbol_type (token::LT);
+      }
+#else
+      static
+      symbol_type
+      make_LT ()
+      {
+        return symbol_type (token::LT);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_GT ()
+      {
+        return symbol_type (token::GT);
+      }
+#else
+      static
+      symbol_type
+      make_GT ()
+      {
+        return symbol_type (token::GT);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_LE ()
+      {
+        return symbol_type (token::LE);
+      }
+#else
+      static
+      symbol_type
+      make_LE ()
+      {
+        return symbol_type (token::LE);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_GE ()
+      {
+        return symbol_type (token::GE);
+      }
+#else
+      static
+      symbol_type
+      make_GE ()
+      {
+        return symbol_type (token::GE);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_EQ ()
+      {
+        return symbol_type (token::EQ);
+      }
+#else
+      static
+      symbol_type
+      make_EQ ()
+      {
+        return symbol_type (token::EQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NE ()
+      {
+        return symbol_type (token::NE);
+      }
+#else
+      static
+      symbol_type
+      make_NE ()
+      {
+        return symbol_type (token::NE);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_QMARK ()
+      {
+        return symbol_type (token::QMARK);
+      }
+#else
+      static
+      symbol_type
+      make_QMARK ()
+      {
+        return symbol_type (token::QMARK);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_LBRACE ()
       {
         return symbol_type (token::LBRACE);
@@ -1902,7 +2029,7 @@ switch (yykind)
     static const signed char yypgoto_[];
 
     // YYDEFGOTO[NTERM-NUM].
-    static const signed char yydefgoto_[];
+    static const unsigned char yydefgoto_[];
 
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
@@ -2151,9 +2278,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 139,     ///< Last index in yytable_.
-      yynnts_ = 40,  ///< Number of nonterminal symbols.
-      yyfinal_ = 55 ///< Termination state number.
+      yylast_ = 156,     ///< Last index in yytable_.
+      yynnts_ = 42,  ///< Number of nonterminal symbols.
+      yyfinal_ = 57 ///< Termination state number.
     };
 
 
@@ -2165,7 +2292,7 @@ switch (yykind)
 
 #line 2 "parser.y"
 } // yy
-#line 2169 "parser.hpp"
+#line 2296 "parser.hpp"
 
 
 // "%code provides" blocks.
@@ -2173,7 +2300,7 @@ switch (yykind)
 
   int yylex( yy::parser::semantic_type* yylval );
 
-#line 2177 "parser.hpp"
+#line 2304 "parser.hpp"
 
 
 #endif // !YY_YY_PARSER_HPP_INCLUDED

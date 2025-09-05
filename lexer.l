@@ -68,8 +68,17 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 "!"             { return token::NOT; }
 "+"             { return token::PLUS;  }
 "-"             { return token::MINUS; }
-"*"             { return token::MULTIPLY;  }
+"*"             { return token::MULTIPLY;}
 "/"             { return token::DIVIDE; }
+
+"=="            { return token::EQ; }
+"!="            { return token::NE; }
+"<="            { return token::LE; }
+">="            { return token::GE; }
+"<"             { return token::LT; }
+">"             { return token::GT; }
+
+"?"             { return token::QMARK; }
 
 "{"             { return token::LBRACE; }
 "}"             { return token::RBRACE; }

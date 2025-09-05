@@ -20,7 +20,13 @@ namespace ast
         Div,
         And,
         Or,
-        Assign
+        Assign,
+        Eq,
+        Ne,
+        Lt,
+        Le,
+        Gt,
+        Ge
     };
 
     enum class UnOp
@@ -32,6 +38,12 @@ namespace ast
 
     struct Expr : Node
     {
+    };
+
+    struct Try : Expr
+    {
+        std::unique_ptr<Expr> inner;
+        explicit Try(std::unique_ptr<Expr> e) : inner(std::move(e)) {}
     };
 
     struct Ident : Expr

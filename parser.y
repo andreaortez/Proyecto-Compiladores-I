@@ -40,6 +40,9 @@
 %token AND OR NOT
 %token PLUS MINUS MULTIPLY DIVIDE
 
+%token LT GT LE GE EQ NE
+%token QMARK
+
 %token LBRACE RBRACE LPAREN RPAREN LBRACK RBRACK COMMA SEMICOLON
 %token COLON ARROW ASSIGN
 
@@ -50,7 +53,7 @@
 %type <ast::Stmt*>    Stmt LetStmt ReturnStmt IfStmt WhileStmt ForStmt ExprStmt Block
 %type <std::vector<std::unique_ptr<ast::Stmt>>*> StmtList StmtListOpt
 
-%type <ast::Expr*>    Expr OrExpr AndExpr AddExpr MulExpr Unary Postfix Primary
+%type <ast::Expr*>    Expr OrExpr AndExpr EqExpr RelExpr AddExpr MulExpr Unary Postfix Primary
 %type <std::vector<std::unique_ptr<ast::Expr>>*> ArgList ArgListOpt
 
 %type <std::vector<ast::Param>*> ParamListOpt Param1 Param2 Param3 Param4 Param5
@@ -62,12 +65,14 @@
 %type <ast::Expr*> ForInitOpt ForCondOpt ForPostOpt
 
 /* ==== Precedencias ==== */
-%right ASSIGN
-%left  OR
-%left  AND
-%right NOT
-%left  PLUS MINUS
 %left  MULTIPLY DIVIDE
+%left  PLUS MINUS
+%nonassoc LT LE GT GE        
+%nonassoc EQ NE             
+%left  AND
+%left  OR
+%right ASSIGN
+%right NOT
 
 %nonassoc ELSE
 %nonassoc IF_NO_ELSE
@@ -304,8 +309,22 @@ OrExpr
   ;
 
 AndExpr
-  : AndExpr AND AddExpr   { $$ = new ast::Binary(ast::BinOp::And, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | AddExpr               { $$ = $1; }
+  : AndExpr AND EqExpr   { $$ = new ast::Binary(ast::BinOp::And, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | EqExpr               { $$ = $1; }
+  ;
+
+EqExpr
+  : RelExpr               { $$ = $1; }
+  | RelExpr EQ RelExpr    { $$ = new ast::Binary(ast::BinOp::Eq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | RelExpr NE RelExpr    { $$ = new ast::Binary(ast::BinOp::Ne, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  ;
+
+RelExpr
+  : AddExpr               { $$ = $1; }
+  | AddExpr LT AddExpr    { $$ = new ast::Binary(ast::BinOp::Lt, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | AddExpr LE AddExpr    { $$ = new ast::Binary(ast::BinOp::Le, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | AddExpr GT AddExpr    { $$ = new ast::Binary(ast::BinOp::Gt, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | AddExpr GE AddExpr    { $$ = new ast::Binary(ast::BinOp::Ge, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
   ;
 
 AddExpr
@@ -316,8 +335,8 @@ AddExpr
 
 MulExpr
   : MulExpr MULTIPLY Unary    { $$ = new ast::Binary(ast::BinOp::Mul, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | MulExpr DIVIDE Unary   { $$ = new ast::Binary(ast::BinOp::Div, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | Unary                 { $$ = $1; }
+  | MulExpr DIVIDE Unary      { $$ = new ast::Binary(ast::BinOp::Div, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | Unary                     { $$ = $1; }
   ;
 
 Unary
@@ -335,6 +354,10 @@ Postfix
       call->callee.reset($1);
       if ($3) { call->args = std::move(*$3); delete $3; }
       $$ = call;
+    }
+  | Postfix QMARK     
+    {
+      $$ = new ast::Try( std::unique_ptr<ast::Expr>($1) );
     }
   ;
 
