@@ -340,7 +340,7 @@ MulExpr
   ;
 
 Unary
-  : NOT  Unary            { $$ = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>($2)); }
+  : NOT Unary             { $$ = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>($2)); }
   | PLUS Unary            { $$ = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>($2)); }
   | MINUS Unary           { $$ = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>($2)); }
   | Postfix               { $$ = $1; }
@@ -383,4 +383,4 @@ ArgList
   | ArgList COMMA Expr    { $1->emplace_back($3); $$ = $1; }
   ;
 
-%%  /* ===== Fin de reglas ===== */
+%%

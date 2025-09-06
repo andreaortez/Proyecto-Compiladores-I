@@ -12,7 +12,8 @@
 using yy::parser;
 using token = yy::parser::token;
 
-static int cont_comments = 0;
+static int cont_comments = 0; //profundidad de los comentarios anidados
+int yylexerrs = 0; // errores léxicos acumulados
 %}
 
 /* comentarios anidados */
@@ -37,12 +38,11 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 <C_COMMENT>"*/"      { if (--cont_comments == 0) BEGIN(INITIAL); }
 <C_COMMENT>\n        { ++yylineno; }
 <C_COMMENT>.         { /* consumir */ }
-<C_COMMENT><<EOF>>   {
-                        std::fprintf(stderr,
-                          "[lex] comentario de bloque sin cerrar (linea %d)\n",
-                          yylineno);
-                        return 0;
-                      }
+<C_COMMENT><<EOF>> {
+  std::fprintf(stderr, "[lex] comentario de bloque sin cerrar (linea %d)\n", yylineno);
+  ++yylexerrs;
+  return 0; 
+}
 
 {CTRL}+        ;
 
@@ -132,7 +132,9 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
     return token::IDENT;     
 }
 
-.               { std::fprintf(stderr,
-                    "Error lexico (linea %d): '%s'\n", yylineno, yytext); }
+. {
+  std::fprintf(stderr, "Error lexico (linea %d): '%s'\n", yylineno, yytext);
+  ++yylexerrs;
+}
 
-%%  /* fin */
+%% 

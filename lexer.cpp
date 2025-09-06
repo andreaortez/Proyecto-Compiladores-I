@@ -565,11 +565,12 @@ char *yytext;
 using yy::parser;
 using token = yy::parser::token;
 
-static int cont_comments = 0;
-#line 569 "lexer.cpp"
+static int cont_comments = 0; //profundidad de los comentarios anidados
+int yylexerrs = 0; // errores léxicos acumulados
+#line 570 "lexer.cpp"
 /* comentarios anidados */
 
-#line 572 "lexer.cpp"
+#line 573 "lexer.cpp"
 
 #define INITIAL 0
 #define C_COMMENT 1
@@ -785,10 +786,10 @@ YY_DECL
 		}
 
 	{
-#line 29 "lexer.l"
+#line 30 "lexer.l"
 
 
-#line 791 "lexer.cpp"
+#line 792 "lexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -857,54 +858,53 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 31 "lexer.l"
+#line 32 "lexer.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 32 "lexer.l"
+#line 33 "lexer.l"
 ;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 33 "lexer.l"
+#line 34 "lexer.l"
 ;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 35 "lexer.l"
+#line 36 "lexer.l"
 { cont_comments = 1; BEGIN(C_COMMENT); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "lexer.l"
+#line 37 "lexer.l"
 { ++cont_comments; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 37 "lexer.l"
+#line 38 "lexer.l"
 { if (--cont_comments == 0) BEGIN(INITIAL); }
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 38 "lexer.l"
+#line 39 "lexer.l"
 { ++yylineno; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 39 "lexer.l"
+#line 40 "lexer.l"
 { /* consumir */ }
 	YY_BREAK
 case YY_STATE_EOF(C_COMMENT):
-#line 40 "lexer.l"
+#line 41 "lexer.l"
 {
-                        std::fprintf(stderr,
-                          "[lex] comentario de bloque sin cerrar (linea %d)\n",
-                          yylineno);
-                        return 0;
-                      }
+  std::fprintf(stderr, "[lex] comentario de bloque sin cerrar (linea %d)\n", yylineno);
+  ++yylexerrs;
+  return 0; 
+}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
@@ -1164,15 +1164,17 @@ YY_RULE_SETUP
 case 54:
 YY_RULE_SETUP
 #line 135 "lexer.l"
-{ std::fprintf(stderr,
-                    "Error lexico (linea %d): '%s'\n", yylineno, yytext); }
+{
+  std::fprintf(stderr, "Error lexico (linea %d): '%s'\n", yylineno, yytext);
+  ++yylexerrs;
+}
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 138 "lexer.l"
+#line 140 "lexer.l"
 YY_FATAL_ERROR( "flex scanner jammed" );
 	YY_BREAK
-#line 1175 "lexer.cpp"
+#line 1177 "lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2148,6 +2150,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 138 "lexer.l"
-
+#line 140 "lexer.l"
 
