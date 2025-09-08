@@ -148,6 +148,7 @@ namespace ast
                 print(*v->rhs, os, indent + 2);
             return;
         }
+        // --- Llamados a funciones ---
         if (auto v = dynamic_cast<const Call *>(&e))
         {
             padding(os, indent);
@@ -182,6 +183,7 @@ namespace ast
 
     inline void print(const Stmt &s, std::ostream &os, int indent)
     {
+        // --- LetStmt ---
         if (auto v = dynamic_cast<const Let *>(&s))
         {
             padding(os, indent);
@@ -197,6 +199,7 @@ namespace ast
             }
             return;
         }
+        // --- return ---
         if (auto v = dynamic_cast<const Return *>(&s))
         {
             padding(os, indent);
@@ -205,6 +208,7 @@ namespace ast
                 print(*v->value, os, indent + 2);
             return;
         }
+        // --- ExprStmt ---
         if (auto v = dynamic_cast<const ExprStmt *>(&s))
         {
             padding(os, indent);
@@ -218,6 +222,7 @@ namespace ast
             print(*v, os, indent);
             return;
         }
+        // --- IfStmt ---
         if (auto v = dynamic_cast<const If *>(&s))
         {
             padding(os, indent);
@@ -238,6 +243,7 @@ namespace ast
             }
             return;
         }
+        // --- WhileStmt ---
         if (auto v = dynamic_cast<const While *>(&s))
         {
             padding(os, indent);
@@ -252,6 +258,7 @@ namespace ast
                 print(*v->body, os, indent + 4);
             return;
         }
+        // --- ForStmt ---
         if (auto v = dynamic_cast<const For *>(&s))
         {
             padding(os, indent);
@@ -286,32 +293,65 @@ namespace ast
 
     inline void print(const Item &it, std::ostream &os, int indent)
     {
+        // --- FnItem ---
         if (auto v = dynamic_cast<const FnItem *>(&it))
         {
             padding(os, indent);
-            os << "Fn " << (v->fn ? v->fn->name : "<anon>") << "(";
+            os << "Fn\n";
+
             if (v->fn)
             {
-                for (size_t i = 0; i < v->fn->params.size(); ++i)
+                // Nombre
+                padding(os, indent + 2);
+                os << "Name:\n";
+                padding(os, indent + 4);
+                os << v->fn->name << "\n";
+
+                // Parámetros
+                if (!v->fn->params.empty())
                 {
-                    const auto &p = v->fn->params[i];
-                    os << p.name << ": " << p.type;
-                    if (i + 1 < v->fn->params.size())
-                        os << ", ";
+                    padding(os, indent + 2);
+                    os << "Params:\n";
+                    for (const auto &p : v->fn->params)
+                    {
+                        padding(os, indent + 4);
+                        os << "Ident(" << p.name << ")\n";
+                        padding(os, indent + 6);
+                        os << "Type: " << p.type << "\n";
+                    }
                 }
-                os << ")";
+                else
+                {
+                    padding(os, indent + 2);
+                    os << "Params: (none)\n";
+                }
+
+                // return
                 if (!v->fn->retType.empty())
-                    os << " -> " << v->fn->retType;
-                os << "\n";
+                {
+                    padding(os, indent + 2);
+                    os << "Return:\n";
+                    padding(os, indent + 4);
+                    os << v->fn->retType << "\n";
+                }
+
+                // body
                 if (v->fn->body)
-                    print(*v->fn->body, os, indent + 2);
+                {
+                    padding(os, indent + 2);
+                    os << "Body:\n";
+                    print(*v->fn->body, os, indent + 4);
+                }
             }
             else
             {
-                os << ")\n";
+                padding(os, indent + 2);
+                os << "(null)\n";
             }
             return;
         }
+
+        // --- StmtItem ---
         if (auto v = dynamic_cast<const StmtItem *>(&it))
         {
             padding(os, indent);
@@ -320,6 +360,8 @@ namespace ast
                 print(*v->stmt, os, indent + 2);
             return;
         }
+
+        // Desconocido
         padding(os, indent);
         os << "Item(?)\n";
     }
@@ -335,4 +377,4 @@ namespace ast
         }
     }
 
-} // namespace ast
+}
