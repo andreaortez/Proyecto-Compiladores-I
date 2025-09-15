@@ -24,11 +24,15 @@ namespace ast
         Or,
         Assign,
         Eq,
-        Ne,
+        Neq,
         Lt,
-        Le,
+        Leq,
         Gt,
-        Ge
+        Geq,
+        MulEq,
+        DivEq,
+        PlusEq,
+        MinEq
     };
 
     enum class UnOp
@@ -79,6 +83,10 @@ namespace ast
         explicit BoolLit(bool boolean) : var(boolean) {}
     };
 
+    struct Const : Expr
+    {
+    };
+
     struct Unary : Expr
     {
         UnOp op;
@@ -121,6 +129,7 @@ namespace ast
     struct Let : Stmt
     {
         bool isMut = false;
+        bool isConst = false;
         std::string name, type;
         std::unique_ptr<Expr> init;
     };

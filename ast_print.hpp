@@ -28,16 +28,24 @@ namespace ast
             return "=";
         case BinOp::Eq:
             return "==";
-        case BinOp::Ne:
+        case BinOp::Neq:
             return "!=";
         case BinOp::Lt:
             return "<";
-        case BinOp::Le:
+        case BinOp::Leq:
             return "<=";
         case BinOp::Gt:
             return ">";
-        case BinOp::Ge:
+        case BinOp::Geq:
             return ">=";
+        case BinOp::MulEq:
+            return "*=";
+        case BinOp::DivEq:
+            return "/=";
+        case BinOp::PlusEq:
+            return "+=";
+        case BinOp::MinEq:
+            return "-=";
         }
         return "?";
     }
@@ -215,7 +223,9 @@ namespace ast
         {
             padding(os, indent);
             os << "Let(";
-            if (v->isMut)
+            if (v->isConst)
+                os << "const ";
+            else if (v->isMut)
                 os << "mut ";
             os << "name=" << v->name;
             if (!v->type.empty())

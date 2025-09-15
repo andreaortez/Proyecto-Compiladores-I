@@ -1489,65 +1489,78 @@ namespace yy {
 #line 1490 "parser.cpp"
     break;
 
-  case 45: // TypeOpt: %empty
-#line 234 "parser.y"
+  case 45: // LetStmt: CONST IDENT COLON Type ASSIGN Expr SEMICOLON
+#line 232 "parser.y"
+    {
+      auto s = std::make_unique<ast::Let>();
+      s->isConst = true;                              
+      s->name = std::move(yystack_[5].value.as < std::string > ());
+      s->type = std::move(yystack_[3].value.as < std::string > ());                       
+      s->init.reset(yystack_[1].value.as < ast::Expr* > ());                              
+      yylhs.value.as < ast::Stmt* > () = s.release();
+    }
+#line 1503 "parser.cpp"
+    break;
+
+  case 46: // TypeOpt: %empty
+#line 243 "parser.y"
                            { yylhs.value.as < std::string > () = std::string{}; }
-#line 1496 "parser.cpp"
+#line 1509 "parser.cpp"
     break;
 
-  case 46: // TypeOpt: COLON Type
-#line 235 "parser.y"
+  case 47: // TypeOpt: COLON Type
+#line 244 "parser.y"
                           { yylhs.value.as < std::string > () = std::move(yystack_[0].value.as < std::string > ()); }
-#line 1502 "parser.cpp"
+#line 1515 "parser.cpp"
     break;
 
-  case 47: // InitOpt: %empty
-#line 239 "parser.y"
+  case 48: // InitOpt: %empty
+#line 248 "parser.y"
                            { yylhs.value.as < ast::Expr* > () = (ast::Expr*)nullptr; }
-#line 1508 "parser.cpp"
+#line 1521 "parser.cpp"
     break;
 
-  case 48: // InitOpt: ASSIGN Expr
-#line 240 "parser.y"
+  case 49: // InitOpt: ASSIGN Expr
+#line 249 "parser.y"
                           { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1514 "parser.cpp"
+#line 1527 "parser.cpp"
     break;
 
-  case 49: // ReturnStmt: RETURN ExprOpt SEMICOLON
-#line 245 "parser.y"
+  case 50: // ReturnStmt: RETURN ExprOpt SEMICOLON
+#line 254 "parser.y"
     {
       auto s = std::make_unique<ast::Return>();
       s->value.reset(yystack_[1].value.as < ast::Expr* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1524 "parser.cpp"
+#line 1537 "parser.cpp"
     break;
 
-  case 50: // ExprOpt: %empty
-#line 253 "parser.y"
+  case 51: // ExprOpt: %empty
+#line 262 "parser.y"
                            { yylhs.value.as < ast::Expr* > () = (ast::Expr*)nullptr; }
-#line 1530 "parser.cpp"
+#line 1543 "parser.cpp"
     break;
 
-  case 51: // ExprOpt: Expr
-#line 254 "parser.y"
+  case 52: // ExprOpt: Expr
+#line 263 "parser.y"
                           { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1536 "parser.cpp"
+#line 1549 "parser.cpp"
     break;
 
-  case 52: // IfStmt: IF Expr Block
-#line 259 "parser.y"
+  case 53: // IfStmt: IF Expr Block
+#line 268 "parser.y"
     {
       auto s = std::make_unique<ast::If>();
       s->cond.reset(yystack_[1].value.as < ast::Expr* > ());
       s->thenB.reset((ast::Block*)yystack_[0].value.as < ast::Stmt* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1547 "parser.cpp"
+#line 1560 "parser.cpp"
     break;
 
-  case 53: // IfStmt: IF Expr Block ELSE IfStmt
-#line 266 "parser.y"
+  case 54: // IfStmt: IF Expr Block ELSE IfStmt
+#line 275 "parser.y"
     {
       auto s = std::make_unique<ast::If>();
       s->cond.reset(yystack_[3].value.as < ast::Expr* > ());
@@ -1555,11 +1568,11 @@ namespace yy {
       s->elseS.reset(yystack_[0].value.as < ast::Stmt* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1559 "parser.cpp"
+#line 1572 "parser.cpp"
     break;
 
-  case 54: // IfStmt: IF Expr Block ELSE Block
-#line 274 "parser.y"
+  case 55: // IfStmt: IF Expr Block ELSE Block
+#line 283 "parser.y"
     {
       auto s = std::make_unique<ast::If>();
       s->cond.reset(yystack_[3].value.as < ast::Expr* > ());
@@ -1567,22 +1580,22 @@ namespace yy {
       s->elseS.reset(yystack_[0].value.as < ast::Stmt* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1571 "parser.cpp"
+#line 1584 "parser.cpp"
     break;
 
-  case 55: // WhileStmt: WHILE Expr Block
-#line 285 "parser.y"
+  case 56: // WhileStmt: WHILE Expr Block
+#line 294 "parser.y"
     {
       auto s = std::make_unique<ast::While>();
       s->cond.reset(yystack_[1].value.as < ast::Expr* > ());
       s->body.reset((ast::Block*)yystack_[0].value.as < ast::Stmt* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1582 "parser.cpp"
+#line 1595 "parser.cpp"
     break;
 
-  case 56: // ForStmt: FOR IDENT IN Expr RANGE Expr Block
-#line 295 "parser.y"
+  case 57: // ForStmt: FOR IDENT IN Expr RANGE Expr Block
+#line 304 "parser.y"
     {
       auto s = std::make_unique<ast::ForIn>();
       s->var = std::move(yystack_[5].value.as < std::string > ());
@@ -1592,11 +1605,11 @@ namespace yy {
       s->body.reset(static_cast<ast::Block*>(yystack_[0].value.as < ast::Stmt* > ()));
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1596 "parser.cpp"
+#line 1609 "parser.cpp"
     break;
 
-  case 57: // ForStmt: FOR IDENT IN Expr RANGE_EQ Expr Block
-#line 305 "parser.y"
+  case 58: // ForStmt: FOR IDENT IN Expr RANGE_EQ Expr Block
+#line 314 "parser.y"
     {
       auto s = std::make_unique<ast::ForIn>();
       s->var = std::move(yystack_[5].value.as < std::string > ());
@@ -1606,274 +1619,298 @@ namespace yy {
       s->body.reset(static_cast<ast::Block*>(yystack_[0].value.as < ast::Stmt* > ()));
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1610 "parser.cpp"
+#line 1623 "parser.cpp"
     break;
 
-  case 58: // ExprStmt: Expr SEMICOLON
-#line 318 "parser.y"
+  case 59: // ExprStmt: Expr SEMICOLON
+#line 327 "parser.y"
     {
       auto s = std::make_unique<ast::ExprStmt>();
       s->expr.reset(yystack_[1].value.as < ast::Expr* > ());
       yylhs.value.as < ast::Stmt* > () = s.release();
     }
-#line 1620 "parser.cpp"
+#line 1633 "parser.cpp"
     break;
 
-  case 59: // Expr: IDENT ASSIGN Expr
-#line 327 "parser.y"
+  case 60: // Expr: IDENT ASSIGN Expr
+#line 336 "parser.y"
                           { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Assign, std::make_unique<ast::Ident>(std::move(yystack_[2].value.as < std::string > ())), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1626 "parser.cpp"
+#line 1639 "parser.cpp"
     break;
 
-  case 60: // Expr: OrExpr
-#line 328 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1632 "parser.cpp"
-    break;
-
-  case 61: // OrExpr: OrExpr OR AndExpr
-#line 332 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Or,  std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1638 "parser.cpp"
-    break;
-
-  case 62: // OrExpr: AndExpr
-#line 333 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1644 "parser.cpp"
-    break;
-
-  case 63: // AndExpr: AndExpr AND EqExpr
+  case 61: // Expr: OrExpr
 #line 337 "parser.y"
-                         { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::And, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1650 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1645 "parser.cpp"
     break;
 
-  case 64: // AndExpr: EqExpr
-#line 338 "parser.y"
-                         { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1656 "parser.cpp"
+  case 62: // OrExpr: OrExpr OR AndExpr
+#line 341 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Or,  std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1651 "parser.cpp"
     break;
 
-  case 65: // EqExpr: RelExpr
+  case 63: // OrExpr: AndExpr
 #line 342 "parser.y"
                           { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1662 "parser.cpp"
+#line 1657 "parser.cpp"
     break;
 
-  case 66: // EqExpr: RelExpr EQ RelExpr
-#line 343 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Eq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1668 "parser.cpp"
+  case 64: // AndExpr: AndExpr AND EqExpr
+#line 346 "parser.y"
+                         { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::And, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1663 "parser.cpp"
     break;
 
-  case 67: // EqExpr: RelExpr NE RelExpr
-#line 344 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Ne, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1674 "parser.cpp"
+  case 65: // AndExpr: EqExpr
+#line 347 "parser.y"
+                         { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1669 "parser.cpp"
     break;
 
-  case 68: // RelExpr: AddExpr
-#line 348 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1680 "parser.cpp"
-    break;
-
-  case 69: // RelExpr: AddExpr LT AddExpr
-#line 349 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Lt, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1686 "parser.cpp"
-    break;
-
-  case 70: // RelExpr: AddExpr LE AddExpr
-#line 350 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Le, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1692 "parser.cpp"
-    break;
-
-  case 71: // RelExpr: AddExpr GT AddExpr
+  case 66: // EqExpr: RelExpr
 #line 351 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Gt, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1698 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1675 "parser.cpp"
     break;
 
-  case 72: // RelExpr: AddExpr GE AddExpr
+  case 67: // EqExpr: RelExpr EQ RelExpr
 #line 352 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Ge, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1704 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Eq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1681 "parser.cpp"
     break;
 
-  case 73: // AddExpr: AddExpr PLUS MulExpr
-#line 356 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Add, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1710 "parser.cpp"
+  case 68: // EqExpr: RelExpr NEQ RelExpr
+#line 353 "parser.y"
+                           { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Neq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1687 "parser.cpp"
     break;
 
-  case 74: // AddExpr: AddExpr MINUS MulExpr
+  case 69: // RelExpr: AddExpr
 #line 357 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Sub, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1716 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1693 "parser.cpp"
     break;
 
-  case 75: // AddExpr: MulExpr
+  case 70: // RelExpr: AddExpr LT AddExpr
 #line 358 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1722 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Lt, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1699 "parser.cpp"
     break;
 
-  case 76: // MulExpr: MulExpr MULTIPLY Unary
+  case 71: // RelExpr: AddExpr LEQ AddExpr
+#line 359 "parser.y"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Leq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1705 "parser.cpp"
+    break;
+
+  case 72: // RelExpr: AddExpr GT AddExpr
+#line 360 "parser.y"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Gt, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1711 "parser.cpp"
+    break;
+
+  case 73: // RelExpr: AddExpr GEQ AddExpr
+#line 361 "parser.y"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Geq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1717 "parser.cpp"
+    break;
+
+  case 74: // RelExpr: AddExpr MULEQ AddExpr
 #line 362 "parser.y"
-                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Mul, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1728 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::MulEq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1723 "parser.cpp"
     break;
 
-  case 77: // MulExpr: MulExpr DIVIDE Unary
+  case 75: // RelExpr: AddExpr DIVEQ AddExpr
 #line 363 "parser.y"
-                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Div, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1734 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::DivEq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1729 "parser.cpp"
     break;
 
-  case 78: // MulExpr: MulExpr MOD Unary
+  case 76: // RelExpr: AddExpr PLUSEQ AddExpr
 #line 364 "parser.y"
-                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Mod, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1740 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::PlusEq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1735 "parser.cpp"
     break;
 
-  case 79: // MulExpr: Unary
+  case 77: // RelExpr: AddExpr MINEQ AddExpr
 #line 365 "parser.y"
-                              { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1746 "parser.cpp"
+                            { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::MinEq, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1741 "parser.cpp"
     break;
 
-  case 80: // Unary: Unary AS Type
+  case 78: // AddExpr: AddExpr PLUS MulExpr
 #line 369 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Cast(std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::move(yystack_[0].value.as < std::string > ())); }
-#line 1752 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Add, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1747 "parser.cpp"
     break;
 
-  case 81: // Unary: NOT Unary
+  case 79: // AddExpr: AddExpr MINUS MulExpr
 #line 370 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1758 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Sub, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1753 "parser.cpp"
     break;
 
-  case 82: // Unary: PLUS Unary
+  case 80: // AddExpr: MulExpr
 #line 371 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1764 "parser.cpp"
-    break;
-
-  case 83: // Unary: MINUS Unary
-#line 372 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
-#line 1770 "parser.cpp"
-    break;
-
-  case 84: // Unary: Postfix
-#line 373 "parser.y"
                           { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1776 "parser.cpp"
+#line 1759 "parser.cpp"
     break;
 
-  case 85: // Postfix: Primary
+  case 81: // MulExpr: MulExpr MULTIPLY Unary
+#line 375 "parser.y"
+                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Mul, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1765 "parser.cpp"
+    break;
+
+  case 82: // MulExpr: MulExpr DIVIDE Unary
+#line 376 "parser.y"
+                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Div, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1771 "parser.cpp"
+    break;
+
+  case 83: // MulExpr: MulExpr MOD Unary
+#line 377 "parser.y"
+                              { yylhs.value.as < ast::Expr* > () = new ast::Binary(ast::BinOp::Mod, std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1777 "parser.cpp"
+    break;
+
+  case 84: // MulExpr: Unary
 #line 378 "parser.y"
-    { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
-#line 1782 "parser.cpp"
+                              { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1783 "parser.cpp"
     break;
 
-  case 86: // Postfix: Postfix LPAREN ArgListOpt RPAREN
-#line 380 "parser.y"
+  case 85: // Unary: Unary AS Type
+#line 382 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Cast(std::unique_ptr<ast::Expr>(yystack_[2].value.as < ast::Expr* > ()), std::move(yystack_[0].value.as < std::string > ())); }
+#line 1789 "parser.cpp"
+    break;
+
+  case 86: // Unary: NOT Unary
+#line 383 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1795 "parser.cpp"
+    break;
+
+  case 87: // Unary: PLUS Unary
+#line 384 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1801 "parser.cpp"
+    break;
+
+  case 88: // Unary: MINUS Unary
+#line 385 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>(yystack_[0].value.as < ast::Expr* > ())); }
+#line 1807 "parser.cpp"
+    break;
+
+  case 89: // Unary: Postfix
+#line 386 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1813 "parser.cpp"
+    break;
+
+  case 90: // Postfix: Primary
+#line 391 "parser.y"
+    { yylhs.value.as < ast::Expr* > () = yystack_[0].value.as < ast::Expr* > (); }
+#line 1819 "parser.cpp"
+    break;
+
+  case 91: // Postfix: Postfix LPAREN ArgListOpt RPAREN
+#line 393 "parser.y"
     {
       auto call = new ast::Call();
       call->callee.reset(yystack_[3].value.as < ast::Expr* > ());
       if (yystack_[1].value.as < std::vector<std::unique_ptr<ast::Expr>>* > ()) { call->args = std::move(*yystack_[1].value.as < std::vector<std::unique_ptr<ast::Expr>>* > ()); delete yystack_[1].value.as < std::vector<std::unique_ptr<ast::Expr>>* > (); }
       yylhs.value.as < ast::Expr* > () = call;
     }
-#line 1793 "parser.cpp"
+#line 1830 "parser.cpp"
     break;
 
-  case 87: // Postfix: Postfix QMARK
-#line 387 "parser.y"
+  case 92: // Postfix: Postfix QUESTION
+#line 400 "parser.y"
     {
       yylhs.value.as < ast::Expr* > () = new ast::Try( std::unique_ptr<ast::Expr>(yystack_[1].value.as < ast::Expr* > ()) );
     }
-#line 1801 "parser.cpp"
+#line 1838 "parser.cpp"
     break;
 
-  case 88: // Primary: IDENT
-#line 393 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::Ident(std::move(yystack_[0].value.as < std::string > ())); }
-#line 1807 "parser.cpp"
-    break;
-
-  case 89: // Primary: INT_LIT
-#line 394 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::IntLit(yystack_[0].value.as < long long > ()); }
-#line 1813 "parser.cpp"
-    break;
-
-  case 90: // Primary: FLOAT_LIT
-#line 395 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::FloatLit(yystack_[0].value.as < double > ()); }
-#line 1819 "parser.cpp"
-    break;
-
-  case 91: // Primary: TRUE_LIT
-#line 396 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::BoolLit(true); }
-#line 1825 "parser.cpp"
-    break;
-
-  case 92: // Primary: FALSE_LIT
-#line 397 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::BoolLit(false); }
-#line 1831 "parser.cpp"
-    break;
-
-  case 93: // Primary: CHAR_LIT
-#line 398 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::CharLit(yystack_[0].value.as < char > ()); }
-#line 1837 "parser.cpp"
-    break;
-
-  case 94: // Primary: STR_LIT
-#line 399 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = new ast::StringLit(std::move(yystack_[0].value.as < std::string > ())); }
-#line 1843 "parser.cpp"
-    break;
-
-  case 95: // Primary: LPAREN Expr RPAREN
-#line 400 "parser.y"
-                          { yylhs.value.as < ast::Expr* > () = yystack_[1].value.as < ast::Expr* > (); }
-#line 1849 "parser.cpp"
-    break;
-
-  case 96: // ArgListOpt: %empty
-#line 405 "parser.y"
-                           { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = nullptr; }
-#line 1855 "parser.cpp"
-    break;
-
-  case 97: // ArgListOpt: ArgList
+  case 93: // Primary: IDENT
 #line 406 "parser.y"
-                          { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = yystack_[0].value.as < std::vector<std::unique_ptr<ast::Expr>>* > (); }
-#line 1861 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = new ast::Ident(std::move(yystack_[0].value.as < std::string > ())); }
+#line 1844 "parser.cpp"
     break;
 
-  case 98: // ArgList: Expr
+  case 94: // Primary: INT_LIT
+#line 407 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::IntLit(yystack_[0].value.as < long long > ()); }
+#line 1850 "parser.cpp"
+    break;
+
+  case 95: // Primary: FLOAT_LIT
+#line 408 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::FloatLit(yystack_[0].value.as < double > ()); }
+#line 1856 "parser.cpp"
+    break;
+
+  case 96: // Primary: TRUE_LIT
+#line 409 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::BoolLit(true); }
+#line 1862 "parser.cpp"
+    break;
+
+  case 97: // Primary: FALSE_LIT
 #line 410 "parser.y"
-                          { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = new std::vector<std::unique_ptr<ast::Expr>>{}; yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > ()->emplace_back(yystack_[0].value.as < ast::Expr* > ()); }
-#line 1867 "parser.cpp"
+                          { yylhs.value.as < ast::Expr* > () = new ast::BoolLit(false); }
+#line 1868 "parser.cpp"
     break;
 
-  case 99: // ArgList: ArgList COMMA Expr
+  case 98: // Primary: CHAR_LIT
 #line 411 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::CharLit(yystack_[0].value.as < char > ()); }
+#line 1874 "parser.cpp"
+    break;
+
+  case 99: // Primary: STR_LIT
+#line 412 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = new ast::StringLit(std::move(yystack_[0].value.as < std::string > ())); }
+#line 1880 "parser.cpp"
+    break;
+
+  case 100: // Primary: LPAREN Expr RPAREN
+#line 413 "parser.y"
+                          { yylhs.value.as < ast::Expr* > () = yystack_[1].value.as < ast::Expr* > (); }
+#line 1886 "parser.cpp"
+    break;
+
+  case 101: // ArgListOpt: %empty
+#line 418 "parser.y"
+                           { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = nullptr; }
+#line 1892 "parser.cpp"
+    break;
+
+  case 102: // ArgListOpt: ArgList
+#line 419 "parser.y"
+                          { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = yystack_[0].value.as < std::vector<std::unique_ptr<ast::Expr>>* > (); }
+#line 1898 "parser.cpp"
+    break;
+
+  case 103: // ArgList: Expr
+#line 423 "parser.y"
+                          { yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = new std::vector<std::unique_ptr<ast::Expr>>{}; yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > ()->emplace_back(yystack_[0].value.as < ast::Expr* > ()); }
+#line 1904 "parser.cpp"
+    break;
+
+  case 104: // ArgList: ArgList COMMA Expr
+#line 424 "parser.y"
                           { yystack_[2].value.as < std::vector<std::unique_ptr<ast::Expr>>* > ()->emplace_back(yystack_[0].value.as < ast::Expr* > ()); yylhs.value.as < std::vector<std::unique_ptr<ast::Expr>>* > () = yystack_[2].value.as < std::vector<std::unique_ptr<ast::Expr>>* > (); }
-#line 1873 "parser.cpp"
+#line 1910 "parser.cpp"
     break;
 
 
-#line 1877 "parser.cpp"
+#line 1914 "parser.cpp"
 
             default:
               break;
@@ -2062,153 +2099,161 @@ namespace yy {
 
 
 
-  const signed char parser::yypact_ninf_ = -112;
+  const signed char parser::yypact_ninf_ = -122;
 
   const signed char parser::yytable_ninf_ = -1;
 
   const short
   parser::yypact_[] =
   {
-      72,     7,    -2,   122,   122,     1,   122,   -21,     0,     5,
-    -112,  -112,  -112,  -112,  -112,  -112,   134,   134,   134,    12,
-     122,    10,    58,    72,  -112,  -112,  -112,  -112,  -112,  -112,
-    -112,  -112,  -112,  -112,    21,    50,    60,  -112,   -24,    28,
-      14,    38,   -28,  -112,    90,    61,    69,    10,    10,    62,
-      66,  -112,  -112,  -112,   122,  -112,    38,    38,    38,    76,
-      12,  -112,    75,  -112,  -112,  -112,  -112,   134,   134,   134,
-     134,   134,   134,   134,   134,   134,   134,   134,   134,   134,
-      57,  -112,   122,    61,    57,    70,   101,   114,  -112,   122,
-    -112,  -112,  -112,  -112,  -112,    60,  -112,  -112,  -112,    14,
-      14,     9,     9,     9,     9,    38,    38,    38,  -112,  -112,
-    -112,  -112,  -112,  -112,  -112,    79,    77,    70,  -112,   122,
-      78,    84,    83,  -112,  -112,  -112,  -112,  -112,    81,     3,
-      33,  -112,   122,    86,  -112,  -112,    57,    85,   101,  -112,
-    -112,   122,   122,  -112,  -112,  -112,    57,    10,    89,    10,
-      10,  -112,  -112,   101,  -112,  -112,    91,   101,   102,   101,
-    -112
+      15,    -3,     4,    14,   133,   133,    42,   133,   -32,    11,
+     -26,  -122,  -122,  -122,  -122,  -122,  -122,   145,   145,   145,
+      84,   133,    26,    73,    15,  -122,  -122,  -122,  -122,  -122,
+    -122,  -122,  -122,  -122,  -122,    22,    52,    54,  -122,   -23,
+     148,    10,    25,   -34,  -122,    63,    30,    32,    39,    26,
+      26,    31,    38,  -122,  -122,  -122,   133,  -122,    25,    25,
+      25,    53,    84,  -122,    50,  -122,  -122,  -122,  -122,   145,
+     145,   145,   145,   145,   145,   145,   145,   145,   145,   145,
+     145,   145,   145,   145,   145,   145,    41,  -122,   133,    30,
+      41,    45,    41,    82,    94,  -122,   133,  -122,  -122,  -122,
+    -122,  -122,    54,  -122,  -122,  -122,    10,    10,    20,    20,
+      20,    20,    20,    20,    20,    20,    25,    25,    25,  -122,
+    -122,  -122,  -122,  -122,  -122,  -122,    62,    60,    45,  -122,
+     133,    72,    70,    74,    80,  -122,  -122,  -122,  -122,  -122,
+      79,     1,     6,  -122,   133,    81,  -122,  -122,   133,    41,
+      78,    82,  -122,  -122,   133,   133,  -122,  -122,    83,  -122,
+      41,    26,    85,    26,    26,  -122,  -122,  -122,    82,  -122,
+    -122,    86,    82,    87,    82,  -122
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       2,     0,     0,     0,     0,     0,    50,     0,     0,    88,
-      94,    89,    90,    93,    91,    92,     0,     0,     0,    29,
-       0,     0,     0,     3,     4,     6,    39,     7,    33,    34,
-      35,    36,    37,    38,     0,    60,    62,    64,    65,    68,
-      75,    79,    84,    85,     0,    45,     0,     0,     0,     0,
-       0,    51,    40,    41,     0,    88,    81,    82,    83,     0,
-      30,    31,     0,    42,     1,     5,    58,     0,     0,     0,
+       2,     0,     0,     0,     0,     0,     0,    51,     0,     0,
+      93,    99,    94,    95,    98,    96,    97,     0,     0,     0,
+      29,     0,     0,     0,     3,     4,     6,    39,     7,    33,
+      34,    35,    36,    37,    38,     0,    61,    63,    65,    66,
+      69,    80,    84,    89,    90,     0,    46,     0,     0,     0,
+       0,     0,     0,    52,    40,    41,     0,    93,    86,    87,
+      88,     0,    30,    31,     0,    42,     1,     5,    59,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,    87,    96,    45,     0,    47,    11,    52,    55,     0,
-      49,    59,    28,    32,    95,    61,    63,    66,    67,    73,
-      74,    69,    71,    70,    72,    76,    77,    78,    23,    24,
-      25,    26,    27,    80,    98,     0,    97,    47,    46,     0,
-       0,     0,     0,    12,    13,    14,    15,    16,    17,     0,
-       0,    86,     0,     0,    48,    43,     0,     9,     0,    54,
-      53,     0,     0,    99,    44,    22,     0,     0,    18,     0,
-       0,    10,     8,     0,    56,    57,    19,     0,    20,     0,
-      21
+       0,     0,     0,     0,     0,     0,     0,    92,   101,    46,
+       0,    48,     0,    11,    53,    56,     0,    50,    60,    28,
+      32,   100,    62,    64,    67,    68,    78,    79,    70,    72,
+      71,    73,    74,    75,    76,    77,    81,    82,    83,    23,
+      24,    25,    26,    27,    85,   103,     0,   102,    48,    47,
+       0,     0,     0,     0,     0,    12,    13,    14,    15,    16,
+      17,     0,     0,    91,     0,     0,    49,    43,     0,     0,
+       9,     0,    55,    54,     0,     0,   104,    44,     0,    22,
+       0,     0,    18,     0,     0,    45,    10,     8,     0,    57,
+      58,    19,     0,    20,     0,    21
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-    -112,  -112,  -112,   113,  -112,  -112,  -112,  -112,  -112,  -112,
-    -112,  -112,  -111,   -77,   -19,  -112,  -112,   -11,  -112,    64,
-      42,  -112,  -112,    31,  -112,  -112,  -112,    -3,  -112,    98,
-      99,    37,    29,    26,   -12,  -112,  -112,  -112,  -112
+    -122,  -122,  -122,   110,  -122,  -122,  -122,  -122,  -122,  -122,
+    -122,  -122,  -121,   -85,   -18,  -122,  -122,   -14,  -122,    58,
+      21,  -122,  -122,     7,  -122,  -122,  -122,    -4,  -122,    90,
+      69,    -2,    40,    -6,    -7,  -122,  -122,  -122,  -122
   };
 
   const unsigned char
   parser::yydefgoto_[] =
   {
-       0,    22,    23,    24,    25,   147,   122,   123,   124,   125,
-     126,   127,   128,   113,    26,    59,    60,    27,    28,    85,
-     120,    29,    50,    30,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,   115,   116
+       0,    23,    24,    25,    26,   161,   134,   135,   136,   137,
+     138,   139,   140,   124,    27,    61,    62,    28,    29,    91,
+     131,    30,    52,    31,    32,    33,    34,    35,    36,    37,
+      38,    39,    40,    41,    42,    43,    44,   126,   127
   };
 
   const unsigned char
   parser::yytable_[] =
   {
-      47,    48,    63,    51,    56,    57,    58,   118,    61,     3,
-      81,    44,    69,    70,    82,     1,    46,    62,     3,    49,
-       4,     5,     6,     7,     8,    45,    52,   148,    87,    88,
-       9,    10,    11,    12,    13,    14,    15,    71,    72,    16,
-      17,    18,   156,    19,    77,    78,   158,    53,   160,    93,
-      19,    91,    19,    79,    20,    54,    71,    72,    64,   145,
-      73,    74,    75,    76,    21,   105,   106,   107,    66,   151,
-     108,   109,   110,   111,   112,     1,    67,     2,     3,   114,
-       4,     5,     6,     7,     8,    68,   130,   141,   142,    80,
-       9,    10,    11,    12,    13,    14,    15,    99,   100,    16,
-      17,    18,   101,   102,   103,   104,    97,    98,    83,    84,
-     139,    86,    19,    90,    20,    89,   134,    92,    94,   121,
-     119,   129,   131,   132,    21,   135,   137,   138,   152,   143,
-     154,   155,   136,   144,   146,   153,    65,   157,   149,   150,
-       9,    10,    11,    12,    13,    14,    15,   117,   159,    16,
-      17,    18,    55,    10,    11,    12,    13,    14,    15,   133,
-     140,    16,    17,    18,    20,    95,     0,    96,     0,     0,
-       0,     0,     0,     0,     0,     0,    20
+      49,    50,    45,    53,    65,   129,    63,   132,     4,    87,
+      58,    59,    60,    88,    71,    72,    46,    64,     1,     2,
+      54,     3,     4,    47,     5,     6,     7,     8,     9,    56,
+     162,    94,    95,    48,    10,    11,    12,    13,    14,    15,
+      16,    83,    84,    17,    18,    19,    20,   171,   100,    73,
+      74,   173,    98,   175,    85,   119,   120,   121,   122,   123,
+      20,    51,    21,    55,   159,   154,   155,   106,   107,   104,
+     105,    20,    22,    66,    68,   166,   116,   117,   118,    69,
+      70,    86,    89,    90,   125,    92,    93,     1,     2,    96,
+      97,     4,   142,     5,     6,     7,     8,     9,   101,    99,
+     130,   133,   141,    10,    11,    12,    13,    14,    15,    16,
+     143,   144,    17,    18,    19,   108,   109,   110,   111,   112,
+     113,   114,   115,   152,   147,   148,   146,   149,   150,    20,
+     151,    21,   160,   157,    67,   165,   168,   172,   174,   103,
+     156,    22,     0,   167,   158,   169,   170,   128,   153,   145,
+     163,   164,    10,    11,    12,    13,    14,    15,    16,   102,
+       0,    17,    18,    19,    57,    11,    12,    13,    14,    15,
+      16,     0,     0,    17,    18,    19,     0,    73,    74,     0,
+      21,    75,    76,    77,    78,     0,     0,    79,    80,    81,
+      82,     0,    21
   };
 
   const short
   parser::yycheck_[] =
   {
-       3,     4,    21,     6,    16,    17,    18,    84,    19,     6,
-      38,     4,    36,    37,    42,     3,    18,    20,     6,    18,
-       8,     9,    10,    11,    12,    18,    47,   138,    47,    48,
-      18,    19,    20,    21,    22,    23,    24,    28,    29,    27,
-      28,    29,   153,    40,    30,    31,   157,    47,   159,    60,
-      40,    54,    40,    39,    42,    50,    28,    29,     0,   136,
-      32,    33,    34,    35,    52,    77,    78,    79,    47,   146,
-      13,    14,    15,    16,    17,     3,    26,     5,     6,    82,
-       8,     9,    10,    11,    12,    25,    89,    54,    55,    51,
-      18,    19,    20,    21,    22,    23,    24,    71,    72,    27,
-      28,    29,    73,    74,    75,    76,    69,    70,    18,    48,
-     129,    42,    40,    47,    42,    53,   119,    41,    43,    18,
-      50,     7,    43,    46,    52,    47,    43,    46,   147,   132,
-     149,   150,    48,    47,    49,    46,    23,    46,   141,   142,
-      18,    19,    20,    21,    22,    23,    24,    83,    46,    27,
-      28,    29,    18,    19,    20,    21,    22,    23,    24,   117,
-     129,    27,    28,    29,    42,    67,    -1,    68,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    42
+       4,     5,     5,     7,    22,    90,    20,    92,     7,    43,
+      17,    18,    19,    47,    37,    38,    19,    21,     3,     4,
+      52,     6,     7,    19,     9,    10,    11,    12,    13,    55,
+     151,    49,    50,    19,    19,    20,    21,    22,    23,    24,
+      25,    31,    32,    28,    29,    30,    45,   168,    62,    29,
+      30,   172,    56,   174,    44,    14,    15,    16,    17,    18,
+      45,    19,    47,    52,   149,    59,    60,    73,    74,    71,
+      72,    45,    57,     0,    52,   160,    83,    84,    85,    27,
+      26,    56,    19,    53,    88,    53,    47,     3,     4,    58,
+      52,     7,    96,     9,    10,    11,    12,    13,    48,    46,
+      55,    19,     8,    19,    20,    21,    22,    23,    24,    25,
+      48,    51,    28,    29,    30,    75,    76,    77,    78,    79,
+      80,    81,    82,   141,    52,    55,   130,    53,    48,    45,
+      51,    47,    54,    52,    24,    52,    51,    51,    51,    70,
+     144,    57,    -1,   161,   148,   163,   164,    89,   141,   128,
+     154,   155,    19,    20,    21,    22,    23,    24,    25,    69,
+      -1,    28,    29,    30,    19,    20,    21,    22,    23,    24,
+      25,    -1,    -1,    28,    29,    30,    -1,    29,    30,    -1,
+      47,    33,    34,    35,    36,    -1,    -1,    39,    40,    41,
+      42,    -1,    47
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,     3,     5,     6,     8,     9,    10,    11,    12,    18,
-      19,    20,    21,    22,    23,    24,    27,    28,    29,    40,
-      42,    52,    58,    59,    60,    61,    71,    74,    75,    78,
-      80,    81,    82,    83,    84,    85,    86,    87,    88,    89,
-      90,    91,    92,    93,     4,    18,    18,    84,    84,    18,
-      79,    84,    47,    47,    50,    18,    91,    91,    91,    72,
-      73,    74,    84,    71,     0,    60,    47,    26,    25,    36,
-      37,    28,    29,    32,    33,    34,    35,    30,    31,    39,
-      51,    38,    42,    18,    48,    76,    42,    71,    71,    53,
-      47,    84,    41,    74,    43,    86,    87,    88,    88,    90,
-      90,    89,    89,    89,    89,    91,    91,    91,    13,    14,
-      15,    16,    17,    70,    84,    94,    95,    76,    70,    50,
-      77,    18,    63,    64,    65,    66,    67,    68,    69,     7,
-      84,    43,    46,    77,    84,    47,    48,    43,    46,    71,
-      80,    54,    55,    84,    47,    70,    49,    62,    69,    84,
-      84,    70,    71,    46,    71,    71,    69,    46,    69,    46,
-      69
+       0,     3,     4,     6,     7,     9,    10,    11,    12,    13,
+      19,    20,    21,    22,    23,    24,    25,    28,    29,    30,
+      45,    47,    57,    66,    67,    68,    69,    79,    82,    83,
+      86,    88,    89,    90,    91,    92,    93,    94,    95,    96,
+      97,    98,    99,   100,   101,     5,    19,    19,    19,    92,
+      92,    19,    87,    92,    52,    52,    55,    19,    99,    99,
+      99,    80,    81,    82,    92,    79,     0,    68,    52,    27,
+      26,    37,    38,    29,    30,    33,    34,    35,    36,    39,
+      40,    41,    42,    31,    32,    44,    56,    43,    47,    19,
+      53,    84,    53,    47,    79,    79,    58,    52,    92,    46,
+      82,    48,    94,    95,    96,    96,    98,    98,    97,    97,
+      97,    97,    97,    97,    97,    97,    99,    99,    99,    14,
+      15,    16,    17,    18,    78,    92,   102,   103,    84,    78,
+      55,    85,    78,    19,    71,    72,    73,    74,    75,    76,
+      77,     8,    92,    48,    51,    85,    92,    52,    55,    53,
+      48,    51,    79,    88,    59,    60,    92,    52,    92,    78,
+      54,    70,    77,    92,    92,    52,    78,    79,    51,    79,
+      79,    77,    51,    77,    51,    77
   };
 
   const signed char
   parser::yyr1_[] =
   {
-       0,    57,    58,    58,    59,    59,    60,    60,    61,    62,
-      62,    63,    63,    63,    63,    63,    63,    64,    65,    66,
-      67,    68,    69,    70,    70,    70,    70,    70,    71,    72,
-      72,    73,    73,    74,    74,    74,    74,    74,    74,    74,
-      74,    74,    74,    75,    75,    76,    76,    77,    77,    78,
-      79,    79,    80,    80,    80,    81,    82,    82,    83,    84,
-      84,    85,    85,    86,    86,    87,    87,    87,    88,    88,
-      88,    88,    88,    89,    89,    89,    90,    90,    90,    90,
-      91,    91,    91,    91,    91,    92,    92,    92,    93,    93,
-      93,    93,    93,    93,    93,    93,    94,    94,    95,    95
+       0,    65,    66,    66,    67,    67,    68,    68,    69,    70,
+      70,    71,    71,    71,    71,    71,    71,    72,    73,    74,
+      75,    76,    77,    78,    78,    78,    78,    78,    79,    80,
+      80,    81,    81,    82,    82,    82,    82,    82,    82,    82,
+      82,    82,    82,    83,    83,    83,    84,    84,    85,    85,
+      86,    87,    87,    88,    88,    88,    89,    90,    90,    91,
+      92,    92,    93,    93,    94,    94,    95,    95,    95,    96,
+      96,    96,    96,    96,    96,    96,    96,    96,    97,    97,
+      97,    98,    98,    98,    98,    99,    99,    99,    99,    99,
+     100,   100,   100,   101,   101,   101,   101,   101,   101,   101,
+     101,   102,   102,   103,   103
   };
 
   const signed char
@@ -2218,12 +2263,13 @@ namespace yy {
        2,     0,     1,     1,     1,     1,     1,     1,     3,     5,
        7,     9,     3,     1,     1,     1,     1,     1,     3,     0,
        1,     1,     2,     1,     1,     1,     1,     1,     1,     1,
-       2,     2,     2,     5,     6,     0,     2,     0,     2,     3,
-       0,     1,     3,     5,     5,     3,     7,     7,     2,     3,
-       1,     3,     1,     3,     1,     1,     3,     3,     1,     3,
-       3,     3,     3,     3,     3,     1,     3,     3,     3,     1,
-       3,     2,     2,     2,     1,     1,     4,     2,     1,     1,
-       1,     1,     1,     1,     1,     3,     0,     1,     1,     3
+       2,     2,     2,     5,     6,     7,     0,     2,     0,     2,
+       3,     0,     1,     3,     5,     5,     3,     7,     7,     2,
+       3,     1,     3,     1,     3,     1,     1,     3,     3,     1,
+       3,     3,     3,     3,     3,     3,     3,     3,     3,     3,
+       1,     3,     3,     3,     1,     3,     2,     2,     2,     1,
+       1,     4,     2,     1,     1,     1,     1,     1,     1,     1,
+       3,     0,     1,     1,     3
   };
 
 
@@ -2233,14 +2279,15 @@ namespace yy {
   const char*
   const parser::yytname_[] =
   {
-  "\"end of file\"", "error", "\"invalid token\"", "LET", "MUT", "FN",
-  "IF", "ELSE", "WHILE", "FOR", "RETURN", "BREAK", "CONTINUE", "I32_T",
-  "F64_T", "BOOL_T", "CHAR_T", "STR_T", "IDENT", "STR_LIT", "INT_LIT",
-  "FLOAT_LIT", "CHAR_LIT", "TRUE_LIT", "FALSE_LIT", "AND", "OR", "NOT",
-  "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "LT", "GT", "LE", "GE", "EQ",
-  "NE", "QMARK", "MOD", "LBRACE", "RBRACE", "LPAREN", "RPAREN", "LBRACK",
-  "RBRACK", "COMMA", "SEMICOLON", "COLON", "ARROW", "ASSIGN", "AS", "LOOP",
-  "IN", "RANGE", "RANGE_EQ", "IF_NO_ELSE", "$accept", "Program",
+  "\"end of file\"", "error", "\"invalid token\"", "LET", "CONST", "MUT",
+  "FN", "IF", "ELSE", "WHILE", "FOR", "RETURN", "BREAK", "CONTINUE",
+  "I32_T", "F64_T", "BOOL_T", "CHAR_T", "STR_T", "IDENT", "STR_LIT",
+  "INT_LIT", "FLOAT_LIT", "CHAR_LIT", "TRUE_LIT", "FALSE_LIT", "AND", "OR",
+  "NOT", "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "LT", "GT", "LEQ", "GEQ",
+  "EQ", "NEQ", "MULEQ", "DIVEQ", "PLUSEQ", "MINEQ", "QUESTION", "MOD",
+  "LBRACE", "RBRACE", "LPAREN", "RPAREN", "LBRACK", "RBRACK", "COMMA",
+  "SEMICOLON", "COLON", "ARROW", "ASSIGN", "AS", "LOOP", "IN", "RANGE",
+  "RANGE_EQ", "LE", "GE", "NE", "IF_NO_ELSE", "$accept", "Program",
   "ItemList", "Item", "FnDecl", "RetTypeOpt", "ParamListOpt", "Param1",
   "Param2", "Param3", "Param4", "Param5", "Param", "Type", "Block",
   "StmtListOpt", "StmtList", "Stmt", "LetStmt", "TypeOpt", "InitOpt",
@@ -2259,12 +2306,13 @@ namespace yy {
      122,   126,   127,   128,   129,   130,   131,   135,   139,   143,
      148,   153,   158,   166,   167,   168,   169,   170,   175,   184,
      185,   189,   190,   195,   196,   197,   198,   199,   200,   201,
-     202,   203,   204,   213,   222,   234,   235,   239,   240,   244,
-     253,   254,   258,   265,   273,   284,   294,   304,   317,   327,
-     328,   332,   333,   337,   338,   342,   343,   344,   348,   349,
-     350,   351,   352,   356,   357,   358,   362,   363,   364,   365,
-     369,   370,   371,   372,   373,   378,   379,   386,   393,   394,
-     395,   396,   397,   398,   399,   400,   405,   406,   410,   411
+     202,   203,   204,   213,   222,   231,   243,   244,   248,   249,
+     253,   262,   263,   267,   274,   282,   293,   303,   313,   326,
+     336,   337,   341,   342,   346,   347,   351,   352,   353,   357,
+     358,   359,   360,   361,   362,   363,   364,   365,   369,   370,
+     371,   375,   376,   377,   378,   382,   383,   384,   385,   386,
+     391,   392,   399,   406,   407,   408,   409,   410,   411,   412,
+     413,   418,   419,   423,   424
   };
 
   void
@@ -2302,7 +2350,7 @@ namespace yy {
 
 #line 2 "parser.y"
 } // yy
-#line 2306 "parser.cpp"
+#line 2354 "parser.cpp"
 
-#line 414 "parser.y"
+#line 427 "parser.y"
 

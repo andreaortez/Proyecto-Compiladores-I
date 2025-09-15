@@ -498,59 +498,67 @@ namespace yy {
     YYerror = 1,                   // error
     YYUNDEF = 2,                   // "invalid token"
     LET = 3,                       // LET
-    MUT = 4,                       // MUT
-    FN = 5,                        // FN
-    IF = 6,                        // IF
-    ELSE = 7,                      // ELSE
-    WHILE = 8,                     // WHILE
-    FOR = 9,                       // FOR
-    RETURN = 10,                   // RETURN
-    BREAK = 11,                    // BREAK
-    CONTINUE = 12,                 // CONTINUE
-    I32_T = 13,                    // I32_T
-    F64_T = 14,                    // F64_T
-    BOOL_T = 15,                   // BOOL_T
-    CHAR_T = 16,                   // CHAR_T
-    STR_T = 17,                    // STR_T
-    IDENT = 18,                    // IDENT
-    STR_LIT = 19,                  // STR_LIT
-    INT_LIT = 20,                  // INT_LIT
-    FLOAT_LIT = 21,                // FLOAT_LIT
-    CHAR_LIT = 22,                 // CHAR_LIT
-    TRUE_LIT = 23,                 // TRUE_LIT
-    FALSE_LIT = 24,                // FALSE_LIT
-    AND = 25,                      // AND
-    OR = 26,                       // OR
-    NOT = 27,                      // NOT
-    PLUS = 28,                     // PLUS
-    MINUS = 29,                    // MINUS
-    MULTIPLY = 30,                 // MULTIPLY
-    DIVIDE = 31,                   // DIVIDE
-    LT = 32,                       // LT
-    GT = 33,                       // GT
-    LE = 34,                       // LE
-    GE = 35,                       // GE
-    EQ = 36,                       // EQ
-    NE = 37,                       // NE
-    QMARK = 38,                    // QMARK
-    MOD = 39,                      // MOD
-    LBRACE = 40,                   // LBRACE
-    RBRACE = 41,                   // RBRACE
-    LPAREN = 42,                   // LPAREN
-    RPAREN = 43,                   // RPAREN
-    LBRACK = 44,                   // LBRACK
-    RBRACK = 45,                   // RBRACK
-    COMMA = 46,                    // COMMA
-    SEMICOLON = 47,                // SEMICOLON
-    COLON = 48,                    // COLON
-    ARROW = 49,                    // ARROW
-    ASSIGN = 50,                   // ASSIGN
-    AS = 51,                       // AS
-    LOOP = 52,                     // LOOP
-    IN = 53,                       // IN
-    RANGE = 54,                    // RANGE
-    RANGE_EQ = 55,                 // RANGE_EQ
-    IF_NO_ELSE = 56                // IF_NO_ELSE
+    CONST = 4,                     // CONST
+    MUT = 5,                       // MUT
+    FN = 6,                        // FN
+    IF = 7,                        // IF
+    ELSE = 8,                      // ELSE
+    WHILE = 9,                     // WHILE
+    FOR = 10,                      // FOR
+    RETURN = 11,                   // RETURN
+    BREAK = 12,                    // BREAK
+    CONTINUE = 13,                 // CONTINUE
+    I32_T = 14,                    // I32_T
+    F64_T = 15,                    // F64_T
+    BOOL_T = 16,                   // BOOL_T
+    CHAR_T = 17,                   // CHAR_T
+    STR_T = 18,                    // STR_T
+    IDENT = 19,                    // IDENT
+    STR_LIT = 20,                  // STR_LIT
+    INT_LIT = 21,                  // INT_LIT
+    FLOAT_LIT = 22,                // FLOAT_LIT
+    CHAR_LIT = 23,                 // CHAR_LIT
+    TRUE_LIT = 24,                 // TRUE_LIT
+    FALSE_LIT = 25,                // FALSE_LIT
+    AND = 26,                      // AND
+    OR = 27,                       // OR
+    NOT = 28,                      // NOT
+    PLUS = 29,                     // PLUS
+    MINUS = 30,                    // MINUS
+    MULTIPLY = 31,                 // MULTIPLY
+    DIVIDE = 32,                   // DIVIDE
+    LT = 33,                       // LT
+    GT = 34,                       // GT
+    LEQ = 35,                      // LEQ
+    GEQ = 36,                      // GEQ
+    EQ = 37,                       // EQ
+    NEQ = 38,                      // NEQ
+    MULEQ = 39,                    // MULEQ
+    DIVEQ = 40,                    // DIVEQ
+    PLUSEQ = 41,                   // PLUSEQ
+    MINEQ = 42,                    // MINEQ
+    QUESTION = 43,                 // QUESTION
+    MOD = 44,                      // MOD
+    LBRACE = 45,                   // LBRACE
+    RBRACE = 46,                   // RBRACE
+    LPAREN = 47,                   // LPAREN
+    RPAREN = 48,                   // RPAREN
+    LBRACK = 49,                   // LBRACK
+    RBRACK = 50,                   // RBRACK
+    COMMA = 51,                    // COMMA
+    SEMICOLON = 52,                // SEMICOLON
+    COLON = 53,                    // COLON
+    ARROW = 54,                    // ARROW
+    ASSIGN = 55,                   // ASSIGN
+    AS = 56,                       // AS
+    LOOP = 57,                     // LOOP
+    IN = 58,                       // IN
+    RANGE = 59,                    // RANGE
+    RANGE_EQ = 60,                 // RANGE_EQ
+    LE = 61,                       // LE
+    GE = 62,                       // GE
+    NE = 63,                       // NE
+    IF_NO_ELSE = 64                // IF_NO_ELSE
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -567,104 +575,112 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 57, ///< Number of tokens.
+        YYNTOKENS = 65, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
         S_YYUNDEF = 2,                           // "invalid token"
         S_LET = 3,                               // LET
-        S_MUT = 4,                               // MUT
-        S_FN = 5,                                // FN
-        S_IF = 6,                                // IF
-        S_ELSE = 7,                              // ELSE
-        S_WHILE = 8,                             // WHILE
-        S_FOR = 9,                               // FOR
-        S_RETURN = 10,                           // RETURN
-        S_BREAK = 11,                            // BREAK
-        S_CONTINUE = 12,                         // CONTINUE
-        S_I32_T = 13,                            // I32_T
-        S_F64_T = 14,                            // F64_T
-        S_BOOL_T = 15,                           // BOOL_T
-        S_CHAR_T = 16,                           // CHAR_T
-        S_STR_T = 17,                            // STR_T
-        S_IDENT = 18,                            // IDENT
-        S_STR_LIT = 19,                          // STR_LIT
-        S_INT_LIT = 20,                          // INT_LIT
-        S_FLOAT_LIT = 21,                        // FLOAT_LIT
-        S_CHAR_LIT = 22,                         // CHAR_LIT
-        S_TRUE_LIT = 23,                         // TRUE_LIT
-        S_FALSE_LIT = 24,                        // FALSE_LIT
-        S_AND = 25,                              // AND
-        S_OR = 26,                               // OR
-        S_NOT = 27,                              // NOT
-        S_PLUS = 28,                             // PLUS
-        S_MINUS = 29,                            // MINUS
-        S_MULTIPLY = 30,                         // MULTIPLY
-        S_DIVIDE = 31,                           // DIVIDE
-        S_LT = 32,                               // LT
-        S_GT = 33,                               // GT
-        S_LE = 34,                               // LE
-        S_GE = 35,                               // GE
-        S_EQ = 36,                               // EQ
-        S_NE = 37,                               // NE
-        S_QMARK = 38,                            // QMARK
-        S_MOD = 39,                              // MOD
-        S_LBRACE = 40,                           // LBRACE
-        S_RBRACE = 41,                           // RBRACE
-        S_LPAREN = 42,                           // LPAREN
-        S_RPAREN = 43,                           // RPAREN
-        S_LBRACK = 44,                           // LBRACK
-        S_RBRACK = 45,                           // RBRACK
-        S_COMMA = 46,                            // COMMA
-        S_SEMICOLON = 47,                        // SEMICOLON
-        S_COLON = 48,                            // COLON
-        S_ARROW = 49,                            // ARROW
-        S_ASSIGN = 50,                           // ASSIGN
-        S_AS = 51,                               // AS
-        S_LOOP = 52,                             // LOOP
-        S_IN = 53,                               // IN
-        S_RANGE = 54,                            // RANGE
-        S_RANGE_EQ = 55,                         // RANGE_EQ
-        S_IF_NO_ELSE = 56,                       // IF_NO_ELSE
-        S_YYACCEPT = 57,                         // $accept
-        S_Program = 58,                          // Program
-        S_ItemList = 59,                         // ItemList
-        S_Item = 60,                             // Item
-        S_FnDecl = 61,                           // FnDecl
-        S_RetTypeOpt = 62,                       // RetTypeOpt
-        S_ParamListOpt = 63,                     // ParamListOpt
-        S_Param1 = 64,                           // Param1
-        S_Param2 = 65,                           // Param2
-        S_Param3 = 66,                           // Param3
-        S_Param4 = 67,                           // Param4
-        S_Param5 = 68,                           // Param5
-        S_Param = 69,                            // Param
-        S_Type = 70,                             // Type
-        S_Block = 71,                            // Block
-        S_StmtListOpt = 72,                      // StmtListOpt
-        S_StmtList = 73,                         // StmtList
-        S_Stmt = 74,                             // Stmt
-        S_LetStmt = 75,                          // LetStmt
-        S_TypeOpt = 76,                          // TypeOpt
-        S_InitOpt = 77,                          // InitOpt
-        S_ReturnStmt = 78,                       // ReturnStmt
-        S_ExprOpt = 79,                          // ExprOpt
-        S_IfStmt = 80,                           // IfStmt
-        S_WhileStmt = 81,                        // WhileStmt
-        S_ForStmt = 82,                          // ForStmt
-        S_ExprStmt = 83,                         // ExprStmt
-        S_Expr = 84,                             // Expr
-        S_OrExpr = 85,                           // OrExpr
-        S_AndExpr = 86,                          // AndExpr
-        S_EqExpr = 87,                           // EqExpr
-        S_RelExpr = 88,                          // RelExpr
-        S_AddExpr = 89,                          // AddExpr
-        S_MulExpr = 90,                          // MulExpr
-        S_Unary = 91,                            // Unary
-        S_Postfix = 92,                          // Postfix
-        S_Primary = 93,                          // Primary
-        S_ArgListOpt = 94,                       // ArgListOpt
-        S_ArgList = 95                           // ArgList
+        S_CONST = 4,                             // CONST
+        S_MUT = 5,                               // MUT
+        S_FN = 6,                                // FN
+        S_IF = 7,                                // IF
+        S_ELSE = 8,                              // ELSE
+        S_WHILE = 9,                             // WHILE
+        S_FOR = 10,                              // FOR
+        S_RETURN = 11,                           // RETURN
+        S_BREAK = 12,                            // BREAK
+        S_CONTINUE = 13,                         // CONTINUE
+        S_I32_T = 14,                            // I32_T
+        S_F64_T = 15,                            // F64_T
+        S_BOOL_T = 16,                           // BOOL_T
+        S_CHAR_T = 17,                           // CHAR_T
+        S_STR_T = 18,                            // STR_T
+        S_IDENT = 19,                            // IDENT
+        S_STR_LIT = 20,                          // STR_LIT
+        S_INT_LIT = 21,                          // INT_LIT
+        S_FLOAT_LIT = 22,                        // FLOAT_LIT
+        S_CHAR_LIT = 23,                         // CHAR_LIT
+        S_TRUE_LIT = 24,                         // TRUE_LIT
+        S_FALSE_LIT = 25,                        // FALSE_LIT
+        S_AND = 26,                              // AND
+        S_OR = 27,                               // OR
+        S_NOT = 28,                              // NOT
+        S_PLUS = 29,                             // PLUS
+        S_MINUS = 30,                            // MINUS
+        S_MULTIPLY = 31,                         // MULTIPLY
+        S_DIVIDE = 32,                           // DIVIDE
+        S_LT = 33,                               // LT
+        S_GT = 34,                               // GT
+        S_LEQ = 35,                              // LEQ
+        S_GEQ = 36,                              // GEQ
+        S_EQ = 37,                               // EQ
+        S_NEQ = 38,                              // NEQ
+        S_MULEQ = 39,                            // MULEQ
+        S_DIVEQ = 40,                            // DIVEQ
+        S_PLUSEQ = 41,                           // PLUSEQ
+        S_MINEQ = 42,                            // MINEQ
+        S_QUESTION = 43,                         // QUESTION
+        S_MOD = 44,                              // MOD
+        S_LBRACE = 45,                           // LBRACE
+        S_RBRACE = 46,                           // RBRACE
+        S_LPAREN = 47,                           // LPAREN
+        S_RPAREN = 48,                           // RPAREN
+        S_LBRACK = 49,                           // LBRACK
+        S_RBRACK = 50,                           // RBRACK
+        S_COMMA = 51,                            // COMMA
+        S_SEMICOLON = 52,                        // SEMICOLON
+        S_COLON = 53,                            // COLON
+        S_ARROW = 54,                            // ARROW
+        S_ASSIGN = 55,                           // ASSIGN
+        S_AS = 56,                               // AS
+        S_LOOP = 57,                             // LOOP
+        S_IN = 58,                               // IN
+        S_RANGE = 59,                            // RANGE
+        S_RANGE_EQ = 60,                         // RANGE_EQ
+        S_LE = 61,                               // LE
+        S_GE = 62,                               // GE
+        S_NE = 63,                               // NE
+        S_IF_NO_ELSE = 64,                       // IF_NO_ELSE
+        S_YYACCEPT = 65,                         // $accept
+        S_Program = 66,                          // Program
+        S_ItemList = 67,                         // ItemList
+        S_Item = 68,                             // Item
+        S_FnDecl = 69,                           // FnDecl
+        S_RetTypeOpt = 70,                       // RetTypeOpt
+        S_ParamListOpt = 71,                     // ParamListOpt
+        S_Param1 = 72,                           // Param1
+        S_Param2 = 73,                           // Param2
+        S_Param3 = 74,                           // Param3
+        S_Param4 = 75,                           // Param4
+        S_Param5 = 76,                           // Param5
+        S_Param = 77,                            // Param
+        S_Type = 78,                             // Type
+        S_Block = 79,                            // Block
+        S_StmtListOpt = 80,                      // StmtListOpt
+        S_StmtList = 81,                         // StmtList
+        S_Stmt = 82,                             // Stmt
+        S_LetStmt = 83,                          // LetStmt
+        S_TypeOpt = 84,                          // TypeOpt
+        S_InitOpt = 85,                          // InitOpt
+        S_ReturnStmt = 86,                       // ReturnStmt
+        S_ExprOpt = 87,                          // ExprOpt
+        S_IfStmt = 88,                           // IfStmt
+        S_WhileStmt = 89,                        // WhileStmt
+        S_ForStmt = 90,                          // ForStmt
+        S_ExprStmt = 91,                         // ExprStmt
+        S_Expr = 92,                             // Expr
+        S_OrExpr = 93,                           // OrExpr
+        S_AndExpr = 94,                          // AndExpr
+        S_EqExpr = 95,                           // EqExpr
+        S_RelExpr = 96,                          // RelExpr
+        S_AddExpr = 97,                          // AddExpr
+        S_MulExpr = 98,                          // MulExpr
+        S_Unary = 99,                            // Unary
+        S_Postfix = 100,                         // Postfix
+        S_Primary = 101,                         // Primary
+        S_ArgListOpt = 102,                      // ArgListOpt
+        S_ArgList = 103                          // ArgList
       };
     };
 
@@ -1323,6 +1339,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_CONST ()
+      {
+        return symbol_type (token::CONST);
+      }
+#else
+      static
+      symbol_type
+      make_CONST ()
+      {
+        return symbol_type (token::CONST);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_MUT ()
       {
         return symbol_type (token::MUT);
@@ -1773,31 +1804,31 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_LE ()
+      make_LEQ ()
       {
-        return symbol_type (token::LE);
+        return symbol_type (token::LEQ);
       }
 #else
       static
       symbol_type
-      make_LE ()
+      make_LEQ ()
       {
-        return symbol_type (token::LE);
+        return symbol_type (token::LEQ);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_GE ()
+      make_GEQ ()
       {
-        return symbol_type (token::GE);
+        return symbol_type (token::GEQ);
       }
 #else
       static
       symbol_type
-      make_GE ()
+      make_GEQ ()
       {
-        return symbol_type (token::GE);
+        return symbol_type (token::GEQ);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -1818,31 +1849,91 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NE ()
+      make_NEQ ()
       {
-        return symbol_type (token::NE);
+        return symbol_type (token::NEQ);
       }
 #else
       static
       symbol_type
-      make_NE ()
+      make_NEQ ()
       {
-        return symbol_type (token::NE);
+        return symbol_type (token::NEQ);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_QMARK ()
+      make_MULEQ ()
       {
-        return symbol_type (token::QMARK);
+        return symbol_type (token::MULEQ);
       }
 #else
       static
       symbol_type
-      make_QMARK ()
+      make_MULEQ ()
       {
-        return symbol_type (token::QMARK);
+        return symbol_type (token::MULEQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_DIVEQ ()
+      {
+        return symbol_type (token::DIVEQ);
+      }
+#else
+      static
+      symbol_type
+      make_DIVEQ ()
+      {
+        return symbol_type (token::DIVEQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_PLUSEQ ()
+      {
+        return symbol_type (token::PLUSEQ);
+      }
+#else
+      static
+      symbol_type
+      make_PLUSEQ ()
+      {
+        return symbol_type (token::PLUSEQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_MINEQ ()
+      {
+        return symbol_type (token::MINEQ);
+      }
+#else
+      static
+      symbol_type
+      make_MINEQ ()
+      {
+        return symbol_type (token::MINEQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_QUESTION ()
+      {
+        return symbol_type (token::QUESTION);
+      }
+#else
+      static
+      symbol_type
+      make_QUESTION ()
+      {
+        return symbol_type (token::QUESTION);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -2098,6 +2189,51 @@ switch (yykind)
       make_RANGE_EQ ()
       {
         return symbol_type (token::RANGE_EQ);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_LE ()
+      {
+        return symbol_type (token::LE);
+      }
+#else
+      static
+      symbol_type
+      make_LE ()
+      {
+        return symbol_type (token::LE);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_GE ()
+      {
+        return symbol_type (token::GE);
+      }
+#else
+      static
+      symbol_type
+      make_GE ()
+      {
+        return symbol_type (token::GE);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
+      make_NE ()
+      {
+        return symbol_type (token::NE);
+      }
+#else
+      static
+      symbol_type
+      make_NE ()
+      {
+        return symbol_type (token::NE);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
@@ -2419,9 +2555,9 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 176,     ///< Last index in yytable_.
+      yylast_ = 192,     ///< Last index in yytable_.
       yynnts_ = 39,  ///< Number of nonterminal symbols.
-      yyfinal_ = 64 ///< Termination state number.
+      yyfinal_ = 66 ///< Termination state number.
     };
 
 
@@ -2433,7 +2569,7 @@ switch (yykind)
 
 #line 2 "parser.y"
 } // yy
-#line 2437 "parser.hpp"
+#line 2573 "parser.hpp"
 
 
 // "%code provides" blocks.
@@ -2441,7 +2577,7 @@ switch (yykind)
 
   int yylex( yy::parser::semantic_type* yylval );
 
-#line 2445 "parser.hpp"
+#line 2581 "parser.hpp"
 
 
 #endif // !YY_YY_PARSER_HPP_INCLUDED

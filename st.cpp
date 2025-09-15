@@ -23,6 +23,8 @@ static string tok_name(int token)
     // palabras clave
     case tk::LET:
         return "LET";
+    case tk::CONST:
+        return "CONST";
     case tk::MUT:
         return "MUT";
     case tk::FN:
@@ -85,9 +87,17 @@ static string tok_name(int token)
     case tk::MINUS:
         return "MINUS";
     case tk::MULTIPLY:
-        return "STAR";
+        return "MULTIPLY";
     case tk::DIVIDE:
-        return "SLASH";
+        return "DIVIDE";
+    case tk::MULEQ:
+        return "MULEQ";
+    case tk::DIVEQ:
+        return "DIVEQ";
+    case tk::PLUSEQ:
+        return "PLUSEQ";
+    case tk::MINEQ:
+        return "MINEQ";
     case tk::LBRACE:
         return "LBRACE";
     case tk::RBRACE:
@@ -117,16 +127,16 @@ static string tok_name(int token)
     // comparadores
     case tk::LT:
         return "LT";
-    case tk::LE:
-        return "LE";
+    case tk::LEQ:
+        return "LEQ";
     case tk::GT:
         return "GT";
-    case tk::GE:
-        return "GE";
+    case tk::GEQ:
+        return "GEQ";
     case tk::EQ:
         return "EQ";
-    case tk::NE:
-        return "NE";
+    case tk::NEQ:
+        return "NEQ";
 
     default:
         return "tok#" + to_string(token); // fallback

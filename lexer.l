@@ -46,6 +46,7 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 {CTRL}+        ;
 
 "let"           { return token::LET; }
+"const"         { return token::CONST; }
 "mut"           { return token::MUT; }
 "fn"            { return token::FN; }
 "if"            { return token::IF; }
@@ -77,13 +78,17 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 "/"             { return token::DIVIDE; }
 
 "=="            { return token::EQ; }
-"!="            { return token::NE; }
-"<="            { return token::LE; }
-">="            { return token::GE; }
+"!="            { return token::NEQ; }
+"*="            { return token::MULEQ; }
+"/="            { return token::DIVEQ; }
+"+="            { return token::PLUSEQ; }
+"-="            { return token::MINEQ; }
+"<="            { return token::LEQ; }
+">="            { return token::GEQ; }
 "<"             { return token::LT; }
 ">"             { return token::GT; }
 
-"?"             { return token::QMARK; }
+"?"             { return token::QUESTION; }
 "%"             { return token::MOD; }
 
 "{"             { return token::LBRACE; }
