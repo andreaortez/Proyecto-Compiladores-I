@@ -7,20 +7,24 @@
 #include <sstream>
 #include <string>
 
+using namespace std;
+
 extern int yylex(yy::parser::semantic_type *yylval);
 extern FILE *yyin;
 extern int yylineno;
 extern char *yytext;
 extern int yyleng;
 
-static std::string tok_name(int t)
+static string tok_name(int token)
 {
     using tk = yy::parser::token;
-    switch (t)
+    switch (token)
     {
     // palabras clave
     case tk::LET:
         return "LET";
+    case tk::MUT:
+        return "MUT";
     case tk::FN:
         return "FN";
     case tk::IF:
@@ -33,6 +37,16 @@ static std::string tok_name(int t)
         return "FOR";
     case tk::RETURN:
         return "RETURN";
+    case tk::BREAK:
+        return "BREAK";
+    case tk::CONTINUE:
+        return "CONTINUE";
+    case tk::IN:
+        return "IN";
+    case tk::AS:
+        return "AS";
+    case tk::LOOP:
+        return "LOOP";
     // tipos
     case tk::I32_T:
         return "I32_T";
@@ -96,6 +110,10 @@ static std::string tok_name(int t)
         return "ARROW";
     case tk::ASSIGN:
         return "ASSIGN";
+    case tk::RANGE:
+        return "RANGE";
+    case tk::RANGE_EQ:
+        return "RANGE_EQ";
     // comparadores
     case tk::LT:
         return "LT";
@@ -109,73 +127,74 @@ static std::string tok_name(int t)
         return "EQ";
     case tk::NE:
         return "NE";
+
     default:
-        return "tok#" + std::to_string(t); // fallback
+        return "tok#" + to_string(token); // fallback
     }
 }
 
 int main(int argc, char **argv)
 {
-    if (argc > 1 && std::strcmp(argv[1], "-") != 0)
+    if (argc > 1 && strcmp(argv[1], "-") != 0)
     {
-        yyin = std::fopen(argv[1], "rb");
+        yyin = fopen(argv[1], "rb");
         if (!yyin)
         {
-            std::perror("fopen");
+            perror("fopen");
             return 1;
         }
     }
 
-    std::cout << std::left
-              << std::setw(6) << "LINE"
-              << std::setw(15) << "TOKEN"
-              << std::setw(24) << "LEXEME"
-              << "VALUE\n";
-    std::cout << std::string(6 + 15 + 24 + 5, '-') << "\n";
+    cout << left
+         << setw(6) << "LINE"
+         << setw(15) << "TOKEN"
+         << setw(24) << "LEXEME"
+         << "VALUE\n";
+    cout << string(6 + 15 + 24 + 5, '-') << "\n";
 
     yy::parser::semantic_type yylval;
     while (true)
     {
-        int t = yylex(&yylval);
-        if (t == 0)
+        int token = yylex(&yylval);
+        if (token == 0) // EOF
             break;
 
-        std::string name = tok_name(t);
-        std::string lex = yytext ? std::string(yytext, yyleng) : "";
-        std::string val;
+        string name = tok_name(token);
+        string lex = yytext ? string(yytext, yyleng) : "";
+        string val;
 
         using tk = yy::parser::token;
-        switch (t)
+        switch (token)
         {
         case tk::IDENT:
         case tk::STR_LIT:
-            val = yylval.as<std::string>();
+            val = yylval.as<string>();
             break;
         case tk::INT_LIT:
-            val = std::to_string(yylval.as<long long>());
+            val = to_string(yylval.as<long long>());
             break;
         case tk::FLOAT_LIT:
         {
-            std::ostringstream oss;
+            ostringstream oss;
             oss << yylval.as<double>();
             val = oss.str();
             break;
         }
         case tk::CHAR_LIT:
-            val = std::string(1, yylval.as<char>());
+            val = string(1, yylval.as<char>());
             break;
         default:
             break;
         }
 
-        std::cout << std::left
-                  << std::setw(6) << yylineno
-                  << std::setw(15) << name
-                  << std::setw(24) << lex
-                  << val << "\n";
+        cout << left
+             << setw(6) << yylineno
+             << setw(15) << name
+             << setw(24) << lex
+             << val << "\n";
     }
 
     if (yyin && yyin != stdin)
-        std::fclose(yyin);
+        fclose(yyin);
     return 0;
 }

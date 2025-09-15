@@ -3,9 +3,10 @@
 #include <string>
 #include <vector>
 
+using namespace std;
+
 namespace ast
 {
-
     struct Node
     {
         virtual ~Node() = default;
@@ -18,6 +19,7 @@ namespace ast
         Sub,
         Mul,
         Div,
+        Mod,
         And,
         Or,
         Assign,
@@ -36,126 +38,152 @@ namespace ast
         Not
     };
 
+    // base para todas las expresiones
     struct Expr : Node
     {
     };
 
-    struct Try : Expr
-    {
-        std::unique_ptr<Expr> inner;
-        explicit Try(std::unique_ptr<Expr> e) : inner(std::move(e)) {}
-    };
-
     struct Ident : Expr
     {
-        std::string name;
-        explicit Ident(std::string s) : name(std::move(s)) {}
+        string name;
+        explicit Ident(string str) : name(move(str)) {}
     };
 
     struct IntLit : Expr
     {
-        long long v;
-        explicit IntLit(long long x) : v(x) {}
+        long long var;
+        explicit IntLit(long long x) : var(x) {}
     };
 
     struct FloatLit : Expr
     {
-        double v;
-        explicit FloatLit(double x) : v(x) {}
+        double var;
+        explicit FloatLit(double x) : var(x) {}
     };
 
     struct CharLit : Expr
     {
-        char v;
-        explicit CharLit(char c) : v(c) {}
+        char var;
+        explicit CharLit(char c) : var(c) {}
     };
 
     struct StringLit : Expr
     {
-        std::string v;
-        explicit StringLit(std::string s) : v(std::move(s)) {}
+        string var;
+        explicit StringLit(string str) : var(move(str)) {}
     };
 
     struct BoolLit : Expr
     {
-        bool v;
-        explicit BoolLit(bool b) : v(b) {}
+        bool var;
+        explicit BoolLit(bool boolean) : var(boolean) {}
     };
 
     struct Unary : Expr
     {
         UnOp op;
-        std::unique_ptr<Expr> rhs;
-        Unary(UnOp o, std::unique_ptr<Expr> e) : op(o), rhs(std::move(e)) {}
+        unique_ptr<Expr> rightSide;
+        Unary(UnOp o, unique_ptr<Expr> expr) : op(o), rightSide(move(expr)) {}
     };
 
     struct Binary : Expr
     {
         BinOp op;
-        std::unique_ptr<Expr> lhs, rhs;
-        Binary(BinOp o, std::unique_ptr<Expr> a, std::unique_ptr<Expr> b) : op(o), lhs(std::move(a)), rhs(std::move(b)) {}
+        unique_ptr<Expr> leftSide, rightSide;
+        Binary(BinOp o, unique_ptr<Expr> a, unique_ptr<Expr> b) : op(o), leftSide(move(a)), rightSide(move(b)) {}
     };
 
     struct Call : Expr
     {
-        std::unique_ptr<Expr> callee;
-        std::vector<std::unique_ptr<Expr>> args;
+        unique_ptr<Expr> callee;
+        vector<unique_ptr<Expr>> args;
     };
 
-    /*** Sentencias ***/
-    struct Stmt : Node
+    struct Cast : Expr
+    {
+        std::unique_ptr<Expr> expr;
+        std::string toType;
+        Cast(std::unique_ptr<Expr> e, std::string str)
+            : expr(std::move(e)), toType(std::move(str)) {}
+    };
+
+    struct Try : Expr // para ?
+    {
+        unique_ptr<Expr> inner;
+        explicit Try(unique_ptr<Expr> expr) : inner(move(expr)) {} // constructor
+    };
+
+    /* Sentencias */
+    struct Stmt : Node // base
     {
     };
 
     struct Let : Stmt
     {
+        bool isMut = false;
         std::string name, type;
         std::unique_ptr<Expr> init;
     };
 
     struct Return : Stmt
     {
-        std::unique_ptr<Expr> value;
+        unique_ptr<Expr> value;
     };
 
     struct ExprStmt : Stmt
     {
-        std::unique_ptr<Expr> expr;
+        unique_ptr<Expr> expr;
     };
 
     struct Block : Stmt
     {
-        std::vector<std::unique_ptr<Stmt>> stmts;
+        vector<unique_ptr<Stmt>> stmts;
     };
 
     struct If : Stmt
     {
-        std::unique_ptr<Expr> cond;
-        std::unique_ptr<Block> thenB;
-        std::unique_ptr<Stmt> elseS;
+        unique_ptr<Expr> cond;
+        unique_ptr<Block> thenB;
+        unique_ptr<Stmt> elseS;
     };
     struct While : Stmt
     {
-        std::unique_ptr<Expr> cond;
-        std::unique_ptr<Block> body;
+        unique_ptr<Expr> cond;
+        unique_ptr<Block> body;
     };
-    struct For : Stmt
+
+    struct Break : Stmt
     {
-        std::unique_ptr<Expr> init, cond, post;
+    };
+
+    struct Continue : Stmt
+    {
+    };
+
+    struct ForIn : Stmt
+    {
+        std::string var;
+        std::unique_ptr<Expr> from, to;
+        bool inclusive = false;
         std::unique_ptr<Block> body;
     };
 
-    /*** Funciones y programa ***/
+    struct Loop : Stmt
+    {
+        std::unique_ptr<Block> body;
+    };
+
+    /* Funciones y programa */
     struct Param : Node
     {
-        std::string name, type;
+        string name, type;
     };
 
     struct Fn : Node
     {
-        std::string name, retType;
-        std::vector<Param> params;
-        std::unique_ptr<Block> body;
+        string name, retType;
+        vector<Param> params;
+        unique_ptr<Block> body;
     };
 
     struct Item : Node
@@ -165,19 +193,19 @@ namespace ast
 
     struct FnItem : Item
     {
-        std::unique_ptr<Fn> fn;
-        explicit FnItem(std::unique_ptr<Fn> f) : fn(std::move(f)) {}
+        unique_ptr<Fn> fn;
+        explicit FnItem(unique_ptr<Fn> f) : fn(move(f)) {}
     };
 
     struct StmtItem : Item
     {
-        std::unique_ptr<Stmt> stmt;
-        explicit StmtItem(std::unique_ptr<Stmt> s) : stmt(std::move(s)) {}
+        unique_ptr<Stmt> stmt;
+        explicit StmtItem(unique_ptr<Stmt> s) : stmt(move(s)) {}
     };
 
     struct Program : Node
     {
-        std::vector<std::unique_ptr<Item>> items;
+        vector<unique_ptr<Item>> items;
     };
 
 }

@@ -16,7 +16,6 @@ static int cont_comments = 0; //profundidad de los comentarios anidados
 int yylexerrs = 0; // errores léxicos acumulados
 %}
 
-/* comentarios anidados */
 %x C_COMMENT
 
 SPACE     [ \t\r\f\v]+
@@ -37,7 +36,7 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 <C_COMMENT>"/*"      { ++cont_comments; }
 <C_COMMENT>"*/"      { if (--cont_comments == 0) BEGIN(INITIAL); }
 <C_COMMENT>\n        { ++yylineno; }
-<C_COMMENT>.         { /* consumir */ }
+<C_COMMENT>.         { /* ignorar caracteres dentro del comentario */ }
 <C_COMMENT><<EOF>> {
   std::fprintf(stderr, "[lex] comentario de bloque sin cerrar (linea %d)\n", yylineno);
   ++yylexerrs;
@@ -47,12 +46,18 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 {CTRL}+        ;
 
 "let"           { return token::LET; }
+"mut"           { return token::MUT; }
 "fn"            { return token::FN; }
 "if"            { return token::IF; }
 "else"          { return token::ELSE; }
 "while"         { return token::WHILE; }
 "for"           { return token::FOR; }
 "return"        { return token::RETURN; }
+"break"         { return token::BREAK; }
+"continue"      { return token::CONTINUE; }
+"in"            { return token::IN; }
+"as"            { return token::AS; }
+"loop"          { return token::LOOP; }
 
 "i32"           { return token::I32_T; }
 "f64"           { return token::F64_T; }
@@ -79,6 +84,7 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 ">"             { return token::GT; }
 
 "?"             { return token::QMARK; }
+"%"             { return token::MOD; }
 
 "{"             { return token::LBRACE; }
 "}"             { return token::RBRACE; }
@@ -91,9 +97,11 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 ":"             { return token::COLON; }
 "->"            { return token::ARROW; }
 "="             { return token::ASSIGN; }
+"\.\.="         { return token::RANGE_EQ; }
+"\.\."          { return token::RANGE; } 
 
 {FLOAT} { 
-    yylval->emplace<double>( atof(yytext) );                 
+    yylval->emplace<double>( atof(yytext) ); //le manda el token a bison                
     return token::FLOAT_LIT; 
 }
 
@@ -104,7 +112,7 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 
 {CHAR} {
   char val = 0;
-  if (yytext[1] == '\\') {
+  if (yytext[1] == '\\') {// escapes
     switch (yytext[2]) {
       case 'n':  val = '\n'; break;
       case 't':  val = '\t'; break;
@@ -122,8 +130,8 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 }
 
 {STRING} {
-  std::string s(yytext + 1, yyleng - 2);
-  yylval->emplace<std::string>(std::move(s));
+  std::string str(yytext + 1, yyleng - 2);//string sin las comillas
+  yylval->emplace<std::string>(std::move(str));
   return token::STR_LIT;
 }
 

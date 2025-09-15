@@ -22,7 +22,7 @@ int main(int argc, char **argv)
         if (print_ast && root)
             ast::print(*root, std::cout, 0);
         else
-            std::puts("OK");
+            std::puts("COMPILADO REALIZADO EXITOSAMENTE");
     }
     else
     {

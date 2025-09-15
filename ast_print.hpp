@@ -6,7 +6,6 @@
 
 namespace ast
 {
-
     inline const char *binop_symbol(BinOp op)
     {
         switch (op)
@@ -19,6 +18,8 @@ namespace ast
             return "*";
         case BinOp::Div:
             return "/";
+        case BinOp::Mod:
+            return "%";
         case BinOp::And:
             return "&&";
         case BinOp::Or:
@@ -61,36 +62,37 @@ namespace ast
             os << ' ';
     }
 
-    inline void print(const Expr &e, std::ostream &os, int indent);
+    inline void print(const Expr &expr, std::ostream &os, int indent);
     inline void print(const Stmt &s, std::ostream &os, int indent);
     inline void print(const Item &it, std::ostream &os, int indent);
     inline void print(const Block &b, std::ostream &os, int indent);
     inline void print(const Program &p, std::ostream &os, int indent);
 
-    inline void print(const Expr &e, std::ostream &os, int indent)
+    // EXPRESIONES
+    inline void print(const Expr &expr, std::ostream &os, int indent)
     {
-        if (auto v = dynamic_cast<const Ident *>(&e))
+        if (auto v = dynamic_cast<const Ident *>(&expr))
         {
             padding(os, indent);
             os << "Ident(" << v->name << ")\n";
             return;
         }
-        if (auto v = dynamic_cast<const IntLit *>(&e))
+        if (auto v = dynamic_cast<const IntLit *>(&expr))
         {
             padding(os, indent);
-            os << "Int(" << v->v << ")\n";
+            os << "Int(" << v->var << ")\n";
             return;
         }
-        if (auto v = dynamic_cast<const FloatLit *>(&e))
+        if (auto v = dynamic_cast<const FloatLit *>(&expr))
         {
             padding(os, indent);
-            os << "Float(" << v->v << ")\n";
+            os << "Float(" << v->var << ")\n";
             return;
         }
-        if (auto v = dynamic_cast<const CharLit *>(&e))
+        if (auto v = dynamic_cast<const CharLit *>(&expr))
         {
             padding(os, indent);
-            char c = v->v;
+            char c = v->var;
             os << "Char('";
             switch (c)
             {
@@ -118,38 +120,39 @@ namespace ast
             os << "')\n";
             return;
         }
-        if (auto v = dynamic_cast<const StringLit *>(&e))
+        if (auto v = dynamic_cast<const StringLit *>(&expr))
         {
             padding(os, indent);
-            os << "String(\"" << v->v << "\")\n";
+            os << "String(\"" << v->var << "\")\n";
             return;
         }
-        if (auto v = dynamic_cast<const BoolLit *>(&e))
+        if (auto v = dynamic_cast<const BoolLit *>(&expr))
         {
             padding(os, indent);
-            os << "Bool(" << (v->v ? "true" : "false") << ")\n";
+            os << "Bool(" << (v->var ? "true" : "false") << ")\n";
             return;
         }
-        if (auto v = dynamic_cast<const Unary *>(&e))
+        if (auto v = dynamic_cast<const Unary *>(&expr))
         {
             padding(os, indent);
             os << "Unary(" << unop_symbol(v->op) << ")\n";
-            if (v->rhs)
-                print(*v->rhs, os, indent + 2);
+            if (v->rightSide)
+                print(*v->rightSide, os, indent + 2);
             return;
         }
-        if (auto v = dynamic_cast<const Binary *>(&e))
+        if (auto v = dynamic_cast<const Binary *>(&expr))
         {
             padding(os, indent);
             os << "Binary(" << binop_symbol(v->op) << ")\n";
-            if (v->lhs)
-                print(*v->lhs, os, indent + 2);
-            if (v->rhs)
-                print(*v->rhs, os, indent + 2);
+            if (v->leftSide)
+                print(*v->leftSide, os, indent + 2);
+            if (v->rightSide)
+                print(*v->rightSide, os, indent + 2);
             return;
         }
-        // --- Llamados a funciones ---
-        if (auto v = dynamic_cast<const Call *>(&e))
+
+        //  Llamados a funciones
+        if (auto v = dynamic_cast<const Call *>(&expr))
         {
             padding(os, indent);
             os << "Call\n";
@@ -166,10 +169,33 @@ namespace ast
             }
             return;
         }
+
+        if (auto v = dynamic_cast<const Cast *>(&expr))
+        {
+            padding(os, indent);
+            os << "Cast to " << v->toType << "\n";
+            padding(os, indent + 2);
+            os << "Expr:\n";
+            print(*v->expr, os, indent + 4);
+            return;
+        }
+
+        if (auto v = dynamic_cast<const Try *>(&expr))
+        {
+            padding(os, indent);
+            os << "Try\n";
+            padding(os, indent + 2);
+            os << "Expr:\n";
+            if (v->inner)
+                print(*v->inner, os, indent + 4);
+            return;
+        }
+
         padding(os, indent);
         os << "Expr(?)\n";
     }
 
+    // bloques
     inline void print(const Block &b, std::ostream &os, int indent)
     {
         padding(os, indent);
@@ -181,16 +207,21 @@ namespace ast
         }
     }
 
+    // SENTENCIAS
     inline void print(const Stmt &s, std::ostream &os, int indent)
     {
-        // --- LetStmt ---
+        //  LetStmt
         if (auto v = dynamic_cast<const Let *>(&s))
         {
             padding(os, indent);
-            os << "Let(name=" << v->name;
+            os << "Let(";
+            if (v->isMut)
+                os << "mut ";
+            os << "name=" << v->name;
             if (!v->type.empty())
                 os << ", type=" << v->type;
             os << ")\n";
+
             if (v->init)
             {
                 padding(os, indent + 2);
@@ -199,7 +230,7 @@ namespace ast
             }
             return;
         }
-        // --- return ---
+        //  return
         if (auto v = dynamic_cast<const Return *>(&s))
         {
             padding(os, indent);
@@ -208,7 +239,21 @@ namespace ast
                 print(*v->value, os, indent + 2);
             return;
         }
-        // --- ExprStmt ---
+        //  break
+        if (dynamic_cast<const Break *>(&s))
+        {
+            padding(os, indent);
+            os << "Break\n";
+            return;
+        }
+        //  continue
+        if (dynamic_cast<const Continue *>(&s))
+        {
+            padding(os, indent);
+            os << "Continue\n";
+            return;
+        }
+        //  ExprStmt
         if (auto v = dynamic_cast<const ExprStmt *>(&s))
         {
             padding(os, indent);
@@ -217,12 +262,13 @@ namespace ast
                 print(*v->expr, os, indent + 2);
             return;
         }
+        // Block
         if (auto v = dynamic_cast<const Block *>(&s))
         {
             print(*v, os, indent);
             return;
         }
-        // --- IfStmt ---
+        // IfStmt
         if (auto v = dynamic_cast<const If *>(&s))
         {
             padding(os, indent);
@@ -243,7 +289,7 @@ namespace ast
             }
             return;
         }
-        // --- WhileStmt ---
+        //  WhileStmt
         if (auto v = dynamic_cast<const While *>(&s))
         {
             padding(os, indent);
@@ -258,43 +304,65 @@ namespace ast
                 print(*v->body, os, indent + 4);
             return;
         }
-        // --- ForStmt ---
-        if (auto v = dynamic_cast<const For *>(&s))
+
+        //  ForIn
+        if (auto v = dynamic_cast<const ForIn *>(&s))
         {
             padding(os, indent);
-            os << "For\n";
-            if (v->init)
+            os << "ForIn\n";
+
+            // variable
+            padding(os, indent + 2);
+            os << "Var: " << v->var << "\n";
+
+            // rango
+            padding(os, indent + 2);
+            os << "Range: " << (v->inclusive ? "..=" : "..") << "\n";
+
+            if (v->from)
             {
-                padding(os, indent + 2);
-                os << "Init:\n";
-                print(*v->init, os, indent + 4);
+                padding(os, indent + 4);
+                os << "From:\n";
+                print(*v->from, os, indent + 6);
             }
-            if (v->cond)
+            if (v->to)
             {
-                padding(os, indent + 2);
-                os << "Cond:\n";
-                print(*v->cond, os, indent + 4);
+                padding(os, indent + 4);
+                os << "To:\n";
+                print(*v->to, os, indent + 6);
             }
-            if (v->post)
+
+            // cuerpo
+            padding(os, indent + 2);
+            os << "Body:\n";
+            if (v->body)
             {
-                padding(os, indent + 2);
-                os << "Post:\n";
-                print(*v->post, os, indent + 4);
+                print(*v->body, os, indent + 4);
             }
+            return;
+        }
+
+        // loops
+        if (auto v = dynamic_cast<const Loop *>(&s))
+        {
+            padding(os, indent);
+            os << "Loop\n";
             padding(os, indent + 2);
             os << "Body:\n";
             if (v->body)
                 print(*v->body, os, indent + 4);
             return;
         }
+
         padding(os, indent);
         os << "Stmt(?)\n";
     }
 
-    inline void print(const Item &it, std::ostream &os, int indent)
+    // ITEMS
+    inline void print(const Item &item, std::ostream &os, int indent)
     {
-        // --- FnItem ---
-        if (auto v = dynamic_cast<const FnItem *>(&it))
+        //  FnItem
+        if (auto v = dynamic_cast<const FnItem *>(&item))
         {
             padding(os, indent);
             os << "Fn\n";
@@ -351,8 +419,8 @@ namespace ast
             return;
         }
 
-        // --- StmtItem ---
-        if (auto v = dynamic_cast<const StmtItem *>(&it))
+        //  StmtItem
+        if (auto v = dynamic_cast<const StmtItem *>(&item))
         {
             padding(os, indent);
             os << "TopStmt\n";
@@ -370,10 +438,10 @@ namespace ast
     {
         padding(os, indent);
         os << "Program\n";
-        for (auto &it : p.items)
+        for (auto &item : p.items)
         {
-            if (it)
-                print(*it, os, indent + 2);
+            if (item)
+                print(*item, os, indent + 2);
         }
     }
 

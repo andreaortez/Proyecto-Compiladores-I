@@ -28,7 +28,7 @@
   }
 }
 
-%token LET FN IF ELSE WHILE FOR RETURN
+%token LET MUT FN IF ELSE WHILE FOR RETURN BREAK CONTINUE
 %token I32_T F64_T BOOL_T CHAR_T STR_T
 
 %token <std::string> IDENT STR_LIT
@@ -38,14 +38,17 @@
 %token TRUE_LIT FALSE_LIT
 
 %token AND OR NOT
-%token PLUS MINUS MULTIPLY DIVIDE
+%token PLUS MINUS MULTIPLY DIVIDE 
 
 %token LT GT LE GE EQ NE
-%token QMARK
+%token QMARK MOD
 
 %token LBRACE RBRACE LPAREN RPAREN LBRACK RBRACK COMMA SEMICOLON
 %token COLON ARROW ASSIGN
+%token AS LOOP
+%token IN RANGE RANGE_EQ
 
+/*  No Terminales  */
 %type <ast::Program*> Program
 %type <ast::Item*>    Item
 %type <std::vector<std::unique_ptr<ast::Item>>*> ItemList
@@ -62,10 +65,9 @@
 %type <ast::Fn*>      FnDecl
 
 %type <ast::Expr*> InitOpt ExprOpt
-%type <ast::Expr*> ForInitOpt ForCondOpt ForPostOpt
 
-/* ==== Precedencias ==== */
-%left  MULTIPLY DIVIDE
+/*  Precedencias  */
+%left  MULTIPLY DIVIDE MOD
 %left  PLUS MINUS
 %nonassoc LT LE GT GE        
 %nonassoc EQ NE             
@@ -73,16 +75,23 @@
 %left  OR
 %right ASSIGN
 %right NOT
+%right AS
 
 %nonassoc ELSE
 %nonassoc IF_NO_ELSE
 
 %start Program
 
-%%  /* ===== Reglas ===== */
+%%  /* Reglas */
 Program
   : /* vacío */           { $$ = new ast::Program(); out.reset($$); }
-  | ItemList              { auto p = new ast::Program(); p->items = std::move(*$1); delete $1; $$ = p; out.reset(p); }
+  | ItemList { 
+      auto p = new ast::Program(); //creo el nodo Program
+      p->items = std::move(*$1); 
+      delete $1; 
+      $$ = p; 
+      out.reset(p); 
+    }
   ;
 
 ItemList
@@ -95,7 +104,7 @@ Item
   | Stmt                  { $$ = new ast::StmtItem( std::unique_ptr<ast::Stmt>($1) ); }
   ;
 
-/* ===== Definición de función ===== */
+/* Definición de función */
 FnDecl
   : FN IDENT LPAREN ParamListOpt RPAREN RetTypeOpt Block
     {
@@ -103,7 +112,7 @@ FnDecl
       fn->name = std::move($2);
       if ($4) { fn->params = std::move(*$4); delete $4; }
       fn->retType = std::move($6);                
-      fn->body.reset( (ast::Block*)$7 );
+      fn->body.reset( (ast::Block*)$7 );//si body tenia algo lo borra
       $$ = fn.release();
     }
   ;
@@ -161,7 +170,7 @@ Type
   | STR_T                 { $$ = "str"; }
   ;
 
-/* ===== Bloques y lista de sentencias ===== */
+/* Bloques y lista de sentencias */
 Block
   : LBRACE StmtListOpt RBRACE
     {
@@ -181,7 +190,7 @@ StmtList
   | StmtList Stmt         { $1->emplace_back($2); $$ = $1; }
   ;
 
-/* ===== Sentencias ===== */
+/* Sentencias */
 Stmt
   : LetStmt
   | ReturnStmt
@@ -190,15 +199,33 @@ Stmt
   | ForStmt
   | ExprStmt
   | Block
+  | BREAK SEMICOLON          { $$ = new ast::Break(); }
+  | CONTINUE SEMICOLON       { $$ = new ast::Continue(); }
+  | LOOP Block    
+    { 
+      auto s = std::make_unique<ast::Loop>();
+      s->body.reset(static_cast<ast::Block*>($2)); 
+      $$ = s.release(); 
+    }
   ;
 
 LetStmt
   : LET IDENT TypeOpt InitOpt SEMICOLON
     {
       auto s = std::make_unique<ast::Let>();
+      s->isMut = false;
       s->name = std::move($2);
-      s->type   = std::move($3);
-      s->init.reset( (ast::Expr*)$4 );
+      s->type = std::move($3);
+      s->init.reset( (ast::Expr*)$4 );// si tenia algo, lo borra
+      $$ = s.release();
+    }
+  | LET MUT IDENT TypeOpt InitOpt SEMICOLON
+    {
+      auto s = std::make_unique<ast::Let>();
+      s->isMut = true;
+      s->name = std::move($3);
+      s->type = std::move($4);
+      s->init.reset( (ast::Expr*)$5 );
       $$ = s.release();
     }
   ;
@@ -228,7 +255,7 @@ ExprOpt
   ;
 
 IfStmt
-  : IF Expr Block %prec IF_NO_ELSE
+  : IF Expr Block %prec IF_NO_ELSE //el %prec hace que el else se asocie al if mas cercano
     {
       auto s = std::make_unique<ast::If>();
       s->cond.reset($2);
@@ -264,28 +291,26 @@ WhileStmt
   ;
 
 ForStmt
-  : FOR LPAREN ForInitOpt SEMICOLON ForCondOpt SEMICOLON ForPostOpt RPAREN Block
+  : FOR IDENT IN Expr RANGE Expr Block
     {
-      auto s = std::make_unique<ast::For>();
-      s->init.reset($3);
-      s->cond.reset($5);
-      s->post.reset($7);
-      s->body.reset((ast::Block*)$9);
+      auto s = std::make_unique<ast::ForIn>();
+      s->var = std::move($2);
+      s->from.reset($4);
+      s->to.reset($6);
+      s->inclusive = false;
+      s->body.reset(static_cast<ast::Block*>($7));
       $$ = s.release();
     }
-  ;
-
-ForInitOpt
-  : /* vacío */           { $$ = (ast::Expr*)nullptr; }
-  | Expr                  { $$ = $1; }
-  ;
-ForCondOpt
-  : /* vacío */           { $$ = (ast::Expr*)nullptr; }
-  | Expr                  { $$ = $1; }
-  ;
-ForPostOpt
-  : /* vacío */           { $$ = (ast::Expr*)nullptr; }
-  | Expr                  { $$ = $1; }
+  | FOR IDENT IN Expr RANGE_EQ Expr Block
+    {
+      auto s = std::make_unique<ast::ForIn>();
+      s->var = std::move($2);
+      s->from.reset($4);
+      s->to.reset($6);
+      s->inclusive = true;
+      s->body.reset(static_cast<ast::Block*>($7));
+      $$ = s.release();
+    }
   ;
 
 ExprStmt
@@ -297,7 +322,7 @@ ExprStmt
     }
   ;
 
-/* ===== Expresiones ===== */
+/* Expresiones */
 Expr
   : IDENT ASSIGN Expr     { $$ = new ast::Binary(ast::BinOp::Assign, std::make_unique<ast::Ident>(std::move($1)), std::unique_ptr<ast::Expr>($3)); }
   | OrExpr                { $$ = $1; }
@@ -336,16 +361,19 @@ AddExpr
 MulExpr
   : MulExpr MULTIPLY Unary    { $$ = new ast::Binary(ast::BinOp::Mul, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
   | MulExpr DIVIDE Unary      { $$ = new ast::Binary(ast::BinOp::Div, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
+  | MulExpr MOD Unary         { $$ = new ast::Binary(ast::BinOp::Mod, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); } 
   | Unary                     { $$ = $1; }
   ;
 
 Unary
-  : NOT Unary             { $$ = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>($2)); }
+  : Unary AS Type         { $$ = new ast::Cast(std::unique_ptr<ast::Expr>($1), std::move($3)); }
+  | NOT Unary             { $$ = new ast::Unary(ast::UnOp::Not, std::unique_ptr<ast::Expr>($2)); }
   | PLUS Unary            { $$ = new ast::Unary(ast::UnOp::Positive, std::unique_ptr<ast::Expr>($2)); }
   | MINUS Unary           { $$ = new ast::Unary(ast::UnOp::Negative, std::unique_ptr<ast::Expr>($2)); }
   | Postfix               { $$ = $1; }
   ;
 
+/* Llamados(callee) */
 Postfix
   : Primary
   | Postfix LPAREN ArgListOpt RPAREN
