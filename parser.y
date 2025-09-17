@@ -40,7 +40,8 @@
 %token AND OR NOT
 %token PLUS MINUS MULTIPLY DIVIDE 
 
-%token LT GT LEQ GEQ EQ NEQ MULEQ DIVEQ PLUSEQ MINEQ
+%token LT GT LEQ GEQ EQ NEQ 
+%token MULEQ DIVEQ PLUSEQ MINEQ MODEQ
 %token QUESTION MOD
 
 %token LBRACE RBRACE LPAREN RPAREN LBRACK RBRACK COMMA SEMICOLON
@@ -69,11 +70,11 @@
 /*  Precedencias  */
 %left  MULTIPLY DIVIDE MOD
 %left  PLUS MINUS
-%nonassoc LT LE GT GE        
-%nonassoc EQ NE             
+%nonassoc LT LEQ GT GEQ        
+%nonassoc EQ NEQ             
 %left  AND
 %left  OR
-%right ASSIGN
+%right ASSIGN PLUSEQ MINEQ MULEQ DIVEQ MODEQ
 %right NOT
 %right AS
 
@@ -333,8 +334,55 @@ ExprStmt
 
 /* Expresiones */
 Expr
-  : IDENT ASSIGN Expr     { $$ = new ast::Binary(ast::BinOp::Assign, std::make_unique<ast::Ident>(std::move($1)), std::unique_ptr<ast::Expr>($3)); }
-  | OrExpr                { $$ = $1; }
+  : IDENT ASSIGN Expr
+    {
+      $$ = new ast::Binary(
+        ast::BinOp::Assign,
+        std::make_unique<ast::Ident>(std::move($1)),
+        std::unique_ptr<ast::Expr>($3)
+      );
+    }
+  | IDENT PLUSEQ Expr
+    {
+      $$ = new ast::Binary(
+        ast::BinOp::AddAssign,
+        std::make_unique<ast::Ident>(std::move($1)),
+        std::unique_ptr<ast::Expr>($3)
+      );
+    }
+  | IDENT MINEQ Expr
+    {
+      $$ = new ast::Binary(
+        ast::BinOp::SubAssign,
+        std::make_unique<ast::Ident>(std::move($1)),
+        std::unique_ptr<ast::Expr>($3)
+      );
+    }
+  | IDENT MULEQ Expr
+  {
+    $$ = new ast::Binary(
+      ast::BinOp::MulAssign,
+      std::make_unique<ast::Ident>(std::move($1)),
+      std::unique_ptr<ast::Expr>($3)
+    );
+  }
+  | IDENT DIVEQ Expr
+    {
+      $$ = new ast::Binary(
+        ast::BinOp::DivAssign,
+        std::make_unique<ast::Ident>(std::move($1)),
+        std::unique_ptr<ast::Expr>($3)
+      );
+    }
+  | IDENT MODEQ Expr
+    {
+      $$ = new ast::Binary(
+        ast::BinOp::ModAssign,
+        std::make_unique<ast::Ident>(std::move($1)),
+        std::unique_ptr<ast::Expr>($3)
+      );
+    }
+  | OrExpr    { $$ = $1; }
   ;
 
 OrExpr
@@ -359,10 +407,6 @@ RelExpr
   | AddExpr LEQ AddExpr     { $$ = new ast::Binary(ast::BinOp::Leq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
   | AddExpr GT AddExpr      { $$ = new ast::Binary(ast::BinOp::Gt, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
   | AddExpr GEQ AddExpr     { $$ = new ast::Binary(ast::BinOp::Geq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | AddExpr MULEQ AddExpr   { $$ = new ast::Binary(ast::BinOp::MulEq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | AddExpr DIVEQ AddExpr   { $$ = new ast::Binary(ast::BinOp::DivEq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | AddExpr PLUSEQ AddExpr  { $$ = new ast::Binary(ast::BinOp::PlusEq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
-  | AddExpr MINEQ AddExpr   { $$ = new ast::Binary(ast::BinOp::MinEq, std::unique_ptr<ast::Expr>($1), std::unique_ptr<ast::Expr>($3)); }
   ;
 
 AddExpr

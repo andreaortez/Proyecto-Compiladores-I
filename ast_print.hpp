@@ -38,14 +38,16 @@ namespace ast
             return ">";
         case BinOp::Geq:
             return ">=";
-        case BinOp::MulEq:
-            return "*=";
-        case BinOp::DivEq:
-            return "/=";
-        case BinOp::PlusEq:
+        case BinOp::AddAssign:
             return "+=";
-        case BinOp::MinEq:
+        case BinOp::SubAssign:
             return "-=";
+        case BinOp::MulAssign:
+            return "*=";
+        case BinOp::DivAssign:
+            return "/=";
+        case BinOp::ModAssign:
+            return "%=";
         }
         return "?";
     }

@@ -90,14 +90,16 @@ static string tok_name(int token)
         return "MULTIPLY";
     case tk::DIVIDE:
         return "DIVIDE";
-    case tk::MULEQ:
-        return "MULEQ";
-    case tk::DIVEQ:
-        return "DIVEQ";
     case tk::PLUSEQ:
         return "PLUSEQ";
     case tk::MINEQ:
         return "MINEQ";
+    case tk::MULEQ:
+        return "MULEQ";
+    case tk::DIVEQ:
+        return "DIVEQ";
+    case tk::MODEQ:
+        return "MODEQ";
     case tk::LBRACE:
         return "LBRACE";
     case tk::RBRACE:

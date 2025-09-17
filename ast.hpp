@@ -29,10 +29,11 @@ namespace ast
         Leq,
         Gt,
         Geq,
-        MulEq,
-        DivEq,
-        PlusEq,
-        MinEq
+        AddAssign,
+        SubAssign,
+        MulAssign,
+        DivAssign,
+        ModAssign
     };
 
     enum class UnOp

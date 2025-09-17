@@ -79,10 +79,11 @@ CTRL      [\x00-\x08\x0B\x0C\x0E-\x1F\x7F]
 
 "=="            { return token::EQ; }
 "!="            { return token::NEQ; }
-"*="            { return token::MULEQ; }
-"/="            { return token::DIVEQ; }
-"+="            { return token::PLUSEQ; }
+"\+="           { return token::PLUSEQ;}
 "-="            { return token::MINEQ; }
+"\*="           { return token::MULEQ; }
+"/="            { return token::DIVEQ; }
+"%="            { return token::MODEQ; }
 "<="            { return token::LEQ; }
 ">="            { return token::GEQ; }
 "<"             { return token::LT; }
