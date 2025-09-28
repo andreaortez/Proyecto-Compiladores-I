@@ -10,7 +10,6 @@
   #include "ast.hpp"
 }
 
-/* Hace visible yylex() para parser.cpp con la firma correcta */
 %code provides {
   int yylex( yy::parser::semantic_type* yylval );
 }
